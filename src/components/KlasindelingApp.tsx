@@ -15,8 +15,9 @@ export default function KlasindelingApp() {
   const [toonResultaat, setToonResultaat] = useState<boolean>(false);
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [geblokkeerd, setGeblokkeerd] = useState<Set<string>>(new Set());
+  const [klasNaam, setKlasNaam] = useState<string>('');
 
-  const genereerIndeling = () => {
+  const genereerIndeling = (): void => {
     const leerlingenLijst = leerlingen
       .split('\n')
       .map(naam => naam.trim())
@@ -37,11 +38,11 @@ export default function KlasindelingApp() {
     // Schud de leerlingen willekeurig
     const geschuddeLeerlingen = [...leerlingenLijst].sort(() => Math.random() - 0.5);
     
-    // Maak de indeling
+    // Maak de indeling (van achter naar voor, dus onderaan beginnen)
     const nieuweIndeling = [];
     let leerlingIndex = 0;
     
-    for (let r = 0; r < rijen; r++) {
+    for (let r = rijen - 1; r >= 0; r--) {
       const rij = [];
       for (let k = 0; k < kolommen; k++) {
         const positieKey = `${r}-${k}`;
@@ -52,14 +53,14 @@ export default function KlasindelingApp() {
           leerlingIndex++;
         }
       }
-      nieuweIndeling.push(rij);
+      nieuweIndeling.unshift(rij); // unshift om de volgorde te behouden in de array
     }
 
     setIndeling(nieuweIndeling);
     setToonResultaat(true);
   };
 
-  const toggleBlok = (rijIndex: number, kolomIndex: number) => {
+  const toggleBlok = (rijIndex: number, kolomIndex: number): void => {
     const key = `${rijIndex}-${kolomIndex}`;
     const nieuweGeblokkeerd = new Set(geblokkeerd);
     
@@ -72,7 +73,7 @@ export default function KlasindelingApp() {
     setGeblokkeerd(nieuweGeblokkeerd);
   };
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, rijIndex: number, kolomIndex: number) => {
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, rijIndex: number, kolomIndex: number): void => {
     const naam = indeling[rijIndex][kolomIndex];
     if (naam) {
       setDraggedItem({ naam, rijIndex, kolomIndex });
@@ -80,12 +81,12 @@ export default function KlasindelingApp() {
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, doelRijIndex: number, doelKolomIndex: number) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, doelRijIndex: number, doelKolomIndex: number): void => {
     e.preventDefault();
     
     if (!draggedItem) return;
@@ -104,13 +105,13 @@ export default function KlasindelingApp() {
     setDraggedItem(null);
   };
 
-  const handlePrint = () => {
+  const handlePrint = (): void => {
     window.print();
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 print:bg-white print:p-0">
+      <div className="max-w-6xl mx-auto print:max-w-none">
         <div className="print:hidden">
           <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
             <Users className="w-10 h-10" />
@@ -236,6 +237,18 @@ export default function KlasindelingApp() {
                   💡 <strong>Sleep en drop</strong> om leerlingen te verplaatsen
                 </p>
               </div>
+              <div className="max-w-md mx-auto mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Klas naam (optioneel):
+                </label>
+                <input
+                  type="text"
+                  value={klasNaam}
+                  onChange={(e) => setKlasNaam(e.target.value)}
+                  placeholder="Bijv: 3A, 5de jaar, ..."
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                />
+              </div>
               <div>
                 <button
                   onClick={handlePrint}
@@ -251,15 +264,15 @@ export default function KlasindelingApp() {
 
         {/* Resultaat - zichtbaar op scherm en bij printen */}
         {toonResultaat && (
-          <div className="bg-white rounded-lg shadow-lg p-8 print:shadow-none print:p-0">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6 print:mb-8">
-              Klasindeling - Meneer Janssens
+          <div className="bg-white rounded-lg shadow-lg p-8 print:shadow-none print:p-0 print:rounded-none">
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6 print:mb-4 print:text-3xl">
+              Klasindeling - {klasNaam || 'Meneer Janssens'}
             </h2>
             
-            <div className="print:landscape">
-              <div className="flex flex-col gap-2">
+            <div>
+              <div className="flex flex-col gap-2 print:gap-3">
                 {indeling.map((rij, rijIndex) => (
-                  <div key={rijIndex} className="flex gap-2">
+                  <div key={rijIndex} className="flex gap-2 print:gap-3">
                     {rij.map((naam, kolomIndex) => {
                       const isGeblokkeerd = naam === null;
                       return (
@@ -269,17 +282,17 @@ export default function KlasindelingApp() {
                           onDragStart={(e) => handleDragStart(e, rijIndex, kolomIndex)}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, rijIndex, kolomIndex)}
-                          className={`border-2 rounded-lg p-4 text-center min-h-[80px] flex items-center justify-center print:min-h-[60px] print:p-3 transition ${
+                          className={`border-2 rounded-lg p-4 text-center min-h-[80px] flex items-center justify-center transition print:min-h-[70px] print:p-2 print:border ${
                             isGeblokkeerd
-                              ? 'bg-gray-200 border-gray-300 print:bg-gray-100'
+                              ? 'bg-gray-200 border-gray-300 print:bg-white print:border-gray-300'
                               : naam
-                              ? 'bg-indigo-50 border-indigo-300 cursor-move hover:bg-indigo-100 print:cursor-default'
-                              : 'bg-gray-50 border-gray-200'
+                              ? 'bg-indigo-50 border-indigo-300 cursor-move hover:bg-indigo-100 print:cursor-default print:bg-white print:border-gray-700'
+                              : 'bg-gray-50 border-gray-200 print:bg-white print:border-gray-400'
                           }`}
                           style={{ flex: isGeblokkeerd ? '0.5' : '1' }}
                         >
-                          <span className={`font-medium print:text-sm ${
-                            isGeblokkeerd ? 'text-gray-400 text-xs' : naam ? 'text-gray-800' : 'text-gray-400'
+                          <span className={`font-medium print:text-base ${
+                            isGeblokkeerd ? 'text-gray-400 text-xs print:hidden' : naam ? 'text-gray-800 print:text-black' : 'text-gray-400 print:hidden'
                           }`}>
                             {isGeblokkeerd ? '' : naam || '(leeg)'}
                           </span>
@@ -291,7 +304,7 @@ export default function KlasindelingApp() {
               </div>
             </div>
 
-            <div className="mt-6 text-center text-sm text-gray-600 print:mt-8">
+            <div className="mt-6 text-center text-sm text-gray-600 print:mt-4 print:text-base print:text-black">
               <p className="font-medium">Legende: Voorkant van de klas is onderaan</p>
             </div>
           </div>
@@ -300,13 +313,78 @@ export default function KlasindelingApp() {
 
       <style>{`
         @media print {
+          * {
+            background: white !important;
+          }
           body {
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
+            background: white !important;
           }
           @page {
             size: A4 landscape;
-            margin: 1cm;
+            margin: 1.5cm;
+          }
+          .print\\:hidden {
+            display: none !important;
+          }
+          .print\\:bg-white {
+            background-color: white !important;
+          }
+          .print\\:p-0 {
+            padding: 0 !important;
+          }
+          .print\\:max-w-none {
+            max-width: none !important;
+          }
+          .print\\:landscape {
+            width: 100%;
+            max-width: none;
+          }
+          .print\\:shadow-none {
+            box-shadow: none !important;
+          }
+          .print\\:rounded-none {
+            border-radius: 0 !important;
+          }
+          .print\\:mb-4 {
+            margin-bottom: 1rem !important;
+          }
+          .print\\:mt-4 {
+            margin-top: 1rem !important;
+          }
+          .print\\:text-3xl {
+            font-size: 1.875rem !important;
+          }
+          .print\\:text-base {
+            font-size: 1rem !important;
+          }
+          .print\\:text-black {
+            color: black !important;
+          }
+          .print\\:gap-3 {
+            gap: 0.75rem !important;
+          }
+          .print\\:min-h-\\[70px\\] {
+            min-height: 70px !important;
+          }
+          .print\\:p-2 {
+            padding: 0.5rem !important;
+          }
+          .print\\:border {
+            border-width: 1px !important;
+          }
+          .print\\:border-gray-300 {
+            border-color: #d1d5db !important;
+          }
+          .print\\:border-gray-400 {
+            border-color: #9ca3af !important;
+          }
+          .print\\:border-gray-700 {
+            border-color: #374151 !important;
+          }
+          .print\\:cursor-default {
+            cursor: default !important;
           }
           .print\\:hidden {
             display: none !important;
