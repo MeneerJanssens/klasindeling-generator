@@ -438,7 +438,7 @@ export default function KlasindelingApp() {
             </div>
 
             <div className="mt-6 text-center text-sm text-gray-600 print:mt-4 print:text-base print:text-black">
-              <p className="font-medium">Legende: Voorkant van de klas is onderaan</p>
+              <p className="font-medium">Bord</p>
             </div>
           </div>
         )}
