@@ -183,7 +183,7 @@ export default function KlasindelingApp() {
         <div className="print:hidden">
           <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
             <Users className="w-10 h-10" />
-            Klasindeling Generator - Meneer Janssens
+            Klasindeling - Dietrich Janssens
           </h1>
 
           {/* Opgeslagen klassen sectie */}
@@ -199,14 +199,14 @@ export default function KlasindelingApp() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Laad een klas:
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     value={geselecteerdeKlas}
                     onChange={(e) => {
                       setGeselecteerdeKlas(e.target.value);
                       if (e.target.value) laadKlas(e.target.value);
                     }}
-                    className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
                   >
                     <option value="">-- Selecteer een klas --</option>
                     {opgeslagenKlassen.map(klas => (
@@ -218,7 +218,7 @@ export default function KlasindelingApp() {
                   {geselecteerdeKlas && (
                     <button
                       onClick={() => verwijderKlas(geselecteerdeKlas)}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-2 transition"
+                      className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -231,17 +231,17 @@ export default function KlasindelingApp() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Sla huidige klas op:
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <input
                     type="text"
                     value={opslaanNaam}
                     onChange={(e) => setOpslaanNaam(e.target.value)}
                     placeholder="Bijv: 3A, 4B, ..."
-                    className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
                   />
                   <button
                     onClick={opslaanKlas}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2 transition"
+                    className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center gap-2 transition whitespace-nowrap"
                   >
                     <Save className="w-4 h-4" />
                     Opslaan
