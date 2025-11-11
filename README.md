@@ -1,5 +1,7 @@
 # Klasindeling Generator
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a89dcf00-5dd0-4690-9492-e8e80bb470fc/deploy-status)](https://app.netlify.com/projects/klasindeling-generator/deploys)
+
 This is a React application built with Vite and TypeScript for generating random classroom seating arrangements. The app features a clean, responsive interface using Tailwind CSS and includes print functionality.
 
 ## Features

@@ -1,10 +1,7 @@
-import { useState } from 'react';
-import { Armchair, Grid3x3, Shuffle, Printer, X, Download } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Users, Grid3x3, Shuffle, Printer, X, Save, FolderOpen, Trash2, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Leerling, OpgeslagenKlas } from '../utils/klasStorage';
-import LeerlingenInput from './LeerlingenInput';
-import KlasOpslaan from './KlasOpslaan';
 
 interface DraggedItem {
   naam: string;
@@ -12,117 +9,72 @@ interface DraggedItem {
   kolomIndex: number;
 }
 
+interface OpgeslagenKlas {
+  id: string;
+  naam: string;
+  leerlingen: string;
+  rijen: number;
+  kolommen: number;
+  geblokkeerd: string[];
+  klasNaam: string;
+}
+
 export default function KlasindelingApp() {
-  const [leerlingen, setLeerlingen] = useState<Leerling[]>([]);
+  const [leerlingen, setLeerlingen] = useState<string>('');
   const [rijen, setRijen] = useState<number>(4);
   const [kolommen, setKolommen] = useState<number>(6);
-  const [indeling, setIndeling] = useState<(Leerling | null)[][]>([]);
+  const [indeling, setIndeling] = useState<(string | null)[][]>([]);
   const [toonResultaat, setToonResultaat] = useState<boolean>(false);
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [geblokkeerd, setGeblokkeerd] = useState<Set<string>>(new Set());
   const [klasNaam, setKlasNaam] = useState<string>('');
+  const [opgeslagenKlassen, setOpgeslagenKlassen] = useState<OpgeslagenKlas[]>([]);
+  const [geselecteerdeKlas, setGeselecteerdeKlas] = useState<string>('');
+  const [opslaanNaam, setOpslaanNaam] = useState<string>('');
 
-  const handleLaadKlas = (klas: OpgeslagenKlas) => {
-    setLeerlingen(klas.leerlingen);
-    setKlasNaam(klas.naam); // Vul de klasnaam automatisch in
-    
-    // Als er een opgeslagen indeling is, laad die ook
-    if (klas.indeling && klas.rijen && klas.kolommen) {
-      setIndeling(klas.indeling);
-      setRijen(klas.rijen);
-      setKolommen(klas.kolommen);
-      if (klas.geblokkeerd) {
-        setGeblokkeerd(new Set(klas.geblokkeerd));
-      }
-      setToonResultaat(true);
-    } else {
-      setToonResultaat(false);
-      setIndeling([]);
+  // Laad opgeslagen klassen bij opstarten
+  useEffect(() => {
+    const opgeslagen = localStorage.getItem('klasindelingen');
+    if (opgeslagen) {
+      setOpgeslagenKlassen(JSON.parse(opgeslagen));
     }
-  };
+  }, []);
 
   const genereerIndeling = () => {
-    if (leerlingen.length === 0) {
+    const leerlingenLijst = leerlingen
+      .split('\n')
+      .map(naam => naam.trim())
+      .filter(naam => naam.length > 0);
+
+    if (leerlingenLijst.length === 0) {
       alert('Voeg eerst leerlingen toe!');
       return;
     }
 
     const totaalPlaatsen = rijen * kolommen - geblokkeerd.size;
     
-    if (leerlingen.length > totaalPlaatsen) {
-      alert(`Te veel leerlingen! Je hebt ${totaalPlaatsen} beschikbare plaatsen maar ${leerlingen.length} leerlingen.`);
+    if (leerlingenLijst.length > totaalPlaatsen) {
+      alert(`Te veel leerlingen! Je hebt ${totaalPlaatsen} beschikbare plaatsen maar ${leerlingenLijst.length} leerlingen.`);
       return;
     }
 
-    // Verdeel leerlingen: lastige en normale
-    const lastigeLeerlingen = [...leerlingen.filter(l => l.lastig)].sort(() => Math.random() - 0.5);
-    const normaleLeerlingen = [...leerlingen.filter(l => !l.lastig)].sort(() => Math.random() - 0.5);
+    const geschuddeLeerlingen = [...leerlingenLijst].sort(() => Math.random() - 0.5);
     
-    // Maak een lege grid
-    const nieuweIndeling: (Leerling | null)[][] = [];
-    for (let r = 0; r < rijen; r++) {
-      const rij: (Leerling | null)[] = [];
+    const nieuweIndeling = [];
+    let leerlingIndex = 0;
+    
+    for (let r = rijen - 1; r >= 0; r--) {
+      const rij = [];
       for (let k = 0; k < kolommen; k++) {
         const positieKey = `${r}-${k}`;
-        rij.push(geblokkeerd.has(positieKey) ? null : undefined as any);
-      }
-      nieuweIndeling.push(rij);
-    }
-
-    // Helper functie: check of een positie naast een lastige leerling is
-    const heeftLastigeBuur = (r: number, k: number): boolean => {
-      // Check links
-      if (k > 0 && nieuweIndeling[r][k - 1]?.lastig) return true;
-      // Check rechts
-      if (k < kolommen - 1 && nieuweIndeling[r][k + 1]?.lastig) return true;
-      // Check boven
-      if (r > 0 && nieuweIndeling[r - 1][k]?.lastig) return true;
-      // Check onder
-      if (r < rijen - 1 && nieuweIndeling[r + 1][k]?.lastig) return true;
-      return false;
-    };
-
-    // Plaats eerst lastige leerlingen
-    let lastigeIndex = 0;
-    let maxPogingen = 1000;
-    let pogingen = 0;
-    
-    while (lastigeIndex < lastigeLeerlingen.length && pogingen < maxPogingen) {
-      pogingen++;
-      const r = Math.floor(Math.random() * rijen);
-      const k = Math.floor(Math.random() * kolommen);
-      
-      // Check of de positie beschikbaar is en geen lastige buren heeft
-      if (nieuweIndeling[r][k] === undefined && !heeftLastigeBuur(r, k)) {
-        nieuweIndeling[r][k] = lastigeLeerlingen[lastigeIndex];
-        lastigeIndex++;
-        pogingen = 0; // Reset pogingen na succesvolle plaatsing
-      }
-    }
-
-    // Als niet alle lastige leerlingen geplaatst konden worden, waarschuw dan
-    if (lastigeIndex < lastigeLeerlingen.length) {
-      alert('Waarschuwing: Niet alle lastige leerlingen kunnen worden verspreid zonder naast elkaar te zitten. Probeer opnieuw of pas de klasindeling aan.');
-    }
-
-    // Plaats normale leerlingen op overige plekken (van onderen naar boven)
-    let normaleIndex = 0;
-    for (let r = rijen - 1; r >= 0; r--) { // Start onderaan (bij het bord)
-      for (let k = 0; k < kolommen; k++) {
-        if (nieuweIndeling[r][k] === undefined) {
-          nieuweIndeling[r][k] = normaleLeerlingen[normaleIndex] || null;
-          if (normaleLeerlingen[normaleIndex]) normaleIndex++;
+        if (geblokkeerd.has(positieKey)) {
+          rij.push(null);
+        } else {
+          rij.push(geschuddeLeerlingen[leerlingIndex] || '');
+          leerlingIndex++;
         }
       }
-    }
-
-    // Converteer undefined naar null voor consistentie
-    for (let r = 0; r < rijen; r++) {
-      for (let k = 0; k < kolommen; k++) {
-        if (nieuweIndeling[r][k] === undefined) {
-          nieuweIndeling[r][k] = null;
-        }
-      }
+      nieuweIndeling.unshift(rij);
     }
 
     setIndeling(nieuweIndeling);
@@ -143,9 +95,9 @@ export default function KlasindelingApp() {
   };
 
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>, rijIndex: number, kolomIndex: number): void => {
-    const leerling = indeling[rijIndex][kolomIndex];
-    if (leerling) {
-      setDraggedItem({ naam: leerling.naam, rijIndex, kolomIndex });
+    const naam = indeling[rijIndex][kolomIndex];
+    if (naam) {
+      setDraggedItem({ naam, rijIndex, kolomIndex });
       e.dataTransfer.effectAllowed = 'move';
     }
   };
@@ -165,7 +117,7 @@ export default function KlasindelingApp() {
     const nieuweIndeling = indeling.map(rij => [...rij]);
     
     const temp = nieuweIndeling[doelRijIndex][doelKolomIndex];
-    nieuweIndeling[doelRijIndex][doelKolomIndex] = nieuweIndeling[draggedItem.rijIndex][draggedItem.kolomIndex];
+    nieuweIndeling[doelRijIndex][doelKolomIndex] = draggedItem.naam;
     nieuweIndeling[draggedItem.rijIndex][draggedItem.kolomIndex] = temp;
     
     setIndeling(nieuweIndeling);
@@ -213,33 +165,148 @@ export default function KlasindelingApp() {
     }
   };
 
+  const opslaanKlas = () => {
+    if (!opslaanNaam.trim()) {
+      alert('Geef een naam op voor de klas!');
+      return;
+    }
+
+    if (!leerlingen.trim()) {
+      alert('Voeg eerst leerlingen toe!');
+      return;
+    }
+
+    const nieuweKlas = {
+      id: Date.now().toString(),
+      naam: opslaanNaam,
+      leerlingen: leerlingen,
+      rijen: rijen,
+      kolommen: kolommen,
+      geblokkeerd: Array.from(geblokkeerd),
+      klasNaam: opslaanNaam // Use the same name for consistency
+    };
+
+    const bijgewerkt = [...opgeslagenKlassen.filter(k => k.naam !== opslaanNaam), nieuweKlas];
+    setOpgeslagenKlassen(bijgewerkt);
+    localStorage.setItem('klasindelingen', JSON.stringify(bijgewerkt));
+    
+    alert(`Klas "${opslaanNaam}" opgeslagen!`);
+    setOpslaanNaam('');
+  };
+
+  const laadKlas = (klasId: string): void => {
+    const klas = opgeslagenKlassen.find(k => k.id === klasId);
+    if (klas) {
+      setLeerlingen(klas.leerlingen);
+      setRijen(klas.rijen);
+      setKolommen(klas.kolommen);
+      setGeblokkeerd(new Set(klas.geblokkeerd));
+      setKlasNaam(klas.naam); // Update klasNaam with the selected class name
+      setToonResultaat(false);
+      setIndeling([]);
+    }
+  };
+
+  const verwijderKlas = (klasId: string): void => {
+    if (confirm('Weet je zeker dat je deze klas wilt verwijderen?')) {
+      const bijgewerkt = opgeslagenKlassen.filter(k => k.id !== klasId);
+      setOpgeslagenKlassen(bijgewerkt);
+      localStorage.setItem('klasindelingen', JSON.stringify(bijgewerkt));
+      setGeselecteerdeKlas('');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 print:bg-white print:p-0">
       <div className="max-w-6xl mx-auto print:max-w-none">
         <div className="print:hidden">
           <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
-            <Armchair className="w-10 h-10" />
-            Klasindeling
+            <Users className="w-10 h-10" />
+            Klasindeling - Dietrich Janssens
           </h1>
 
           {/* Opgeslagen klassen sectie */}
-          <div className="mb-6">
-            <KlasOpslaan 
-              leerlingen={leerlingen} 
-              onLaadKlas={handleLaadKlas}
-              indeling={indeling}
-              rijen={rijen}
-              kolommen={kolommen}
-              geblokkeerd={geblokkeerd}
-            />
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <FolderOpen className="w-5 h-5" />
+              Opgeslagen klassen
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Klas laden */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Laad een klas:
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <select
+                    value={geselecteerdeKlas}
+                    onChange={(e) => {
+                      setGeselecteerdeKlas(e.target.value);
+                      if (e.target.value) laadKlas(e.target.value);
+                    }}
+                    className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
+                  >
+                    <option value="">-- Selecteer een klas --</option>
+                    {opgeslagenKlassen.map(klas => (
+                      <option key={klas.id} value={klas.id}>
+                        {klas.naam}
+                      </option>
+                    ))}
+                  </select>
+                  {geselecteerdeKlas && (
+                    <button
+                      onClick={() => verwijderKlas(geselecteerdeKlas)}
+                      className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Klas opslaan */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Sla huidige klas op:
+                </label>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <input
+                    type="text"
+                    value={opslaanNaam}
+                    onChange={(e) => setOpslaanNaam(e.target.value)}
+                    placeholder="Bijv: 3A, 4B, ..."
+                    className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
+                  />
+                  <button
+                    onClick={opslaanKlas}
+                    className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center gap-2 transition whitespace-nowrap"
+                  >
+                    <Save className="w-4 h-4" />
+                    Opslaan
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 mb-8">
             {/* Leerlingen invoer */}
-            <LeerlingenInput 
-              leerlingen={leerlingen}
-              setLeerlingen={setLeerlingen}
-            />
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                Leerlingen
+              </h2>
+              <textarea
+                className="w-full h-64 p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                placeholder="Voer de namen van leerlingen in (één per regel)&#10;Bijv:&#10;Jan Janssen&#10;Marie Peeters&#10;Tom Vermeulen"
+                value={leerlingen}
+                onChange={(e) => setLeerlingen(e.target.value)}
+              />
+              <p className="text-sm text-gray-600 mt-2">
+                Aantal leerlingen: {leerlingen.split('\n').filter(n => n.trim()).length}
+              </p>
+            </div>
 
             {/* Klas layout */}
             <div className="bg-white rounded-lg shadow-lg p-6">
@@ -361,21 +428,35 @@ export default function KlasindelingApp() {
                   className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
                 />
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                <button
-                  onClick={handlePrint}
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition"
-                >
-                  <Printer className="w-5 h-5" />
-                  Print Klasindeling
-                </button>
-                <button
-                  onClick={handleDownloadPDF}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition"
-                >
-                  <Download className="w-5 h-5" />
-                  Download als PDF
-                </button>
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                  <button
+                    onClick={handlePrint}
+                    className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition"
+                  >
+                    <Printer className="w-5 h-5" />
+                    Print Klasindeling
+                  </button>
+                  <button
+                    onClick={handleDownloadPDF}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download als PDF
+                  </button>
+                </div>
+                <div>
+                  <a 
+                    href='https://ko-fi.com/Z8Z01G7O8R' 
+                    target='_blank' 
+                    rel='noopener noreferrer'
+                  >
+                    <img 
+                      src='https://ko-fi.com/img/githubbutton_sm.svg' 
+                      alt='Support me on Ko-fi' 
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           )}
@@ -392,43 +473,29 @@ export default function KlasindelingApp() {
               <div className="flex flex-col gap-2 print:gap-3">
                 {indeling.map((rij, rijIndex) => (
                   <div key={rijIndex} className="flex gap-2 print:gap-3">
-                    {rij.map((leerling, kolomIndex) => {
-                      const positieKey = `${rijIndex}-${kolomIndex}`;
-                      const isGeblokkeerd = geblokkeerd.has(positieKey);
-                      const isLastig = leerling?.lastig || false;
+                    {rij.map((naam, kolomIndex) => {
+                      const isGeblokkeerd = naam === null;
                       return (
                         <div
                           key={`${rijIndex}-${kolomIndex}`}
-                          draggable={!isGeblokkeerd && leerling !== null}
+                          draggable={!isGeblokkeerd && naam !== ''}
                           onDragStart={(e) => handleDragStart(e, rijIndex, kolomIndex)}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, rijIndex, kolomIndex)}
-                          className={`border-2 rounded-lg p-4 text-center min-h-[80px] flex flex-col items-center justify-center transition print:min-h-[70px] print:p-2 print:border ${
+                          className={`border-2 rounded-lg p-4 text-center min-h-[80px] flex items-center justify-center transition print:min-h-[70px] print:p-2 print:border ${
                             isGeblokkeerd
                               ? 'bg-gray-200 border-gray-300 print:bg-white print:border-gray-300'
-                              : leerling
-                              ? isLastig
-                                ? 'bg-orange-100 border-orange-300 cursor-move hover:bg-orange-200 print:cursor-default print:bg-white print:border-gray-700'
-                                : 'bg-indigo-50 border-indigo-300 cursor-move hover:bg-indigo-100 print:cursor-default print:bg-white print:border-gray-700'
+                              : naam
+                              ? 'bg-indigo-50 border-indigo-300 cursor-move hover:bg-indigo-100 print:cursor-default print:bg-white print:border-gray-700'
                               : 'bg-gray-50 border-gray-200 print:bg-white print:border-gray-400'
                           }`}
                           style={{ flex: isGeblokkeerd ? '0.5' : '1' }}
                         >
-                          {leerling ? (
-                            <>
-                              <span className="font-medium print:text-base text-gray-800 print:text-black">
-                                {leerling.naam}
-                              </span>
-                              <span className="text-xs mt-1 print:hidden">
-                                {leerling.geslacht === 'm' ? '♂️' : '♀️'}
-                                {isLastig && ' ⚠️'}
-                              </span>
-                            </>
-                          ) : !isGeblokkeerd ? (
-                            <span className="text-gray-400 text-sm print:text-gray-300">
-                              (leeg)
-                            </span>
-                          ) : null}
+                          <span className={`font-medium print:text-base ${
+                            isGeblokkeerd ? 'text-gray-400 text-xs print:hidden' : naam ? 'text-gray-800 print:text-black' : 'text-gray-400 print:hidden'
+                          }`}>
+                            {isGeblokkeerd ? '' : naam || '(leeg)'}
+                          </span>
                         </div>
                       );
                     })}
@@ -443,32 +510,6 @@ export default function KlasindelingApp() {
           </div>
         )}
       </div>
-
-      {/* Donatie sectie - onderaan (alleen zichtbaar als klasindeling getoond wordt) */}
-      {toonResultaat && (
-        <div className="mt-8 text-center print:hidden">
-        <div className="bg-white rounded-2xl shadow-lg p-6 max-w-2xl mx-auto">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Steun dit project
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
-          </p>
-          <a 
-            href='https://ko-fi.com/Z8Z01G7O8R' 
-            target='_blank' 
-            rel='noopener noreferrer'
-            className="inline-block"
-          >
-            <img 
-              src='https://ko-fi.com/img/githubbutton_sm.svg' 
-              alt='Steun me op Ko-fi' 
-              className="mx-auto"
-            />
-          </a>
-        </div>
-      </div>
-      )}
 
       <style>{`
         @media print {
