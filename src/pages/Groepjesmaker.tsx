@@ -44,12 +44,19 @@ export default function Groepjesmaker() {
       nieuweGroepen.push([]);
     }
 
+    // Eerst lastige leerlingen verdelen (één per groep zoveel mogelijk)
     lastigeLeerlingen.forEach((leerling, idx) => {
       nieuweGroepen[idx % aantalGr].push(leerling);
     });
 
-    normaleLeerlingen.forEach((leerling, idx) => {
-      nieuweGroepen[idx % aantalGr].push(leerling);
+    // Normale leerlingen verdelen, maar nu rekening houdend met huidige groepsgroottes
+    // Sorteer groepen op grootte (kleinste eerst) en vul ze aan
+    normaleLeerlingen.forEach((leerling) => {
+      // Vind de kleinste groep
+      const kleinsteGroepIndex = nieuweGroepen.reduce((minIdx, groep, idx, arr) => {
+        return groep.length < arr[minIdx].length ? idx : minIdx;
+      }, 0);
+      nieuweGroepen[kleinsteGroepIndex].push(leerling);
     });
 
     nieuweGroepen = nieuweGroepen.filter(groep => groep.length > 0);
@@ -213,7 +220,7 @@ export default function Groepjesmaker() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
+        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
           <Users className="w-10 h-10" />
           Groepjesmaker
         </h1>
@@ -226,7 +233,7 @@ export default function Groepjesmaker() {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
           <div className="flex items-center justify-between mb-6">
             {leerlingen.length > 0 && (
               <button
@@ -258,7 +265,7 @@ export default function Groepjesmaker() {
                     value="grootte"
                     checked={verdeelMethode === 'grootte'}
                     onChange={(e) => setVerdeelMethode(e.target.value)}
-                    className="w-4 h-4 text-indigo-600"
+                    className="w-4 h-4 accent-indigo-600"
                   />
                   <span className="text-sm font-medium">Groepsgrootte:</span>
                   <input
@@ -279,7 +286,7 @@ export default function Groepjesmaker() {
                     value="aantal"
                     checked={verdeelMethode === 'aantal'}
                     onChange={(e) => setVerdeelMethode(e.target.value)}
-                    className="w-4 h-4 text-indigo-600"
+                    className="w-4 h-4 accent-indigo-600"
                   />
                   <span className="text-sm font-medium">Aantal groepen:</span>
                   <input
@@ -308,7 +315,7 @@ export default function Groepjesmaker() {
 
         {/* Groepen weergave */}
         {groepen.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-lg shadow-lg p-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Groepsindeling ({groepen.length} groepen)
@@ -438,7 +445,7 @@ export default function Groepjesmaker() {
         {/* Donatie sectie - onderaan (alleen zichtbaar als groepen gemaakt zijn) */}
         {groepen.length > 0 && (
           <div className="mt-8 text-center">
-            <div className="bg-white rounded-2xl shadow-lg p-6 max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 Steun dit project
               </h3>

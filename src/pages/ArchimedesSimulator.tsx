@@ -1,22 +1,38 @@
 import { useState, useMemo } from 'react';
-import { Droplet } from 'lucide-react';
+import { Droplets } from 'lucide-react';
 
 // Constanten voor veelgebruikte materialen en vloeistoffen (in kg/m³)
 const MATERIAL_DENSITIES = [
-    { label: 'Hout (800)', density: 800, color: 'bg-amber-500' },
-    { label: 'IJs (917)', density: 917, color: 'bg-blue-300' },
-    { label: 'Water (1000)', density: 1000, color: 'bg-blue-500' },
-    { label: 'Baksteen (1800)', density: 1800, color: 'bg-red-600' },
-    { label: 'Aluminium (2700)', density: 2700, color: 'bg-gray-400' },
-    { label: 'IJzer (7870)', density: 7870, color: 'bg-gray-700' },
+    { label: 'Hout (800)', density: 800, color: 'bg-amber-500', emoji: '🪵' },
+    { label: 'IJs (917)', density: 917, color: 'bg-blue-300', emoji: '🧊' },
+    { label: 'Water (1000)', density: 1000, color: 'bg-blue-500', emoji: '💧' },
+    { label: 'Baksteen (1800)', density: 1800, color: 'bg-red-600', emoji: '🧱' },
+    { label: 'Aluminium (2700)', density: 2700, color: 'bg-gray-400', emoji: '⚙️' },
+    { label: 'IJzer (7870)', density: 7870, color: 'bg-gray-700', emoji: '⚫' },
 ];
 
 const FLUID_DENSITIES = [
-    { label: 'Kerosine (820)', density: 820, color: 'bg-yellow-800' },
-    { label: 'Zoet water (1000)', density: 1000, color: 'bg-blue-500' },
-    { label: 'Zout water (1025)', density: 1025, color: 'bg-blue-700' },
-    { label: 'Glycerine (1260)', density: 1260, color: 'bg-purple-800' },
-    { label: 'Kwik (13534)', density: 13534, color: 'bg-gray-900' },
+    { label: 'Kerosine (820)', density: 820, color: 'bg-yellow-800', emoji: '🛢️' },
+    { label: 'Zoet water (1000)', density: 1000, color: 'bg-blue-500', emoji: '💧' },
+    { label: 'Zout water (1025)', density: 1025, color: 'bg-blue-700', emoji: '🌊' },
+    { label: 'Glycerine (1260)', density: 1260, color: 'bg-purple-800', emoji: '🧪' },
+    { label: 'Kwik (13534)', density: 13534, color: 'bg-gray-900', emoji: '⚗️' },
+];
+
+const GRAVITY_PRESETS = [
+    { label: 'Maan (1.62)', gravity: 1.62, emoji: '🌙' },
+    { label: 'Mars (3.71)', gravity: 3.71, emoji: '🔴' },
+    { label: 'Aarde (9.81)', gravity: 9.81, emoji: '🌍' },
+    { label: 'Jupiter (24.79)', gravity: 24.79, emoji: '🪐' },
+    { label: 'Zon (274)', gravity: 274, emoji: '☀️' },
+];
+
+const VOLUME_PRESETS = [
+    { label: 'Klein blok (0.001 m³ = 1 L)', volume: 0.001, emoji: '📦' },
+    { label: 'Middelgroot (0.01 m³ = 10 L)', volume: 0.01, emoji: '📦' },
+    { label: 'Groot blok (0.1 m³ = 100 L)', volume: 0.1, emoji: '📦' },
+    { label: 'Zeer groot (0.5 m³ = 500 L)', volume: 0.5, emoji: '📦' },
+    { label: 'Extra groot (1 m³ = 1000 L)', volume: 1.0, emoji: '📦' },
 ];
 
 interface ResultDisplayProps {
@@ -96,7 +112,25 @@ interface DensitySliderProps {
     densityType: 'fluid' | 'solid';
     solidInfo: { label: string; color: string };
     onPresetChange?: (value: number) => void;
-    presets: Array<{ label: string; density: number; color: string }>;
+    presets: Array<{ label: string; density: number; color: string; emoji: string }>;
+}
+
+interface GravitySliderProps {
+    value: number;
+    min: number;
+    max: number;
+    step: number;
+    onChange: (value: number) => void;
+    onPresetChange?: (value: number) => void;
+}
+
+interface VolumeSliderProps {
+    value: number;
+    min: number;
+    max: number;
+    step: number;
+    onChange: (value: number) => void;
+    onPresetChange?: (value: number) => void;
 }
 
 // Tailwind CSS Utility Component voor invoer sliders
@@ -107,7 +141,7 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
     const labelText = densityType === 'fluid' ? "Vloeistofdichtheid" : "Blokdichtheid";
 
     const currentPreset = presets.find(p => p.density === value);
-    const displayLabel = currentPreset ? currentPreset.label : `Aangepast (${densityType === 'fluid' ? 'Vloeistof' : 'Blok'})`;
+    const displayLabel = currentPreset ? `${currentPreset.emoji} ${currentPreset.label}` : `Aangepast (${densityType === 'fluid' ? 'Vloeistof' : 'Blok'})`;
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedDensity = parseFloat(e.target.value);
@@ -137,7 +171,7 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
                         )}
                         {presets.map(p => (
                             <option key={p.label} value={p.density}>
-                                {p.label}
+                                {p.emoji} {p.label}
                             </option>
                         ))}
                     </select>
@@ -168,6 +202,180 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
     );
 };
 
+// Nieuwe component voor zwaartekracht slider
+const GravitySlider = ({ value, min, max, step, onChange, onPresetChange }: GravitySliderProps) => {
+    const currentPreset = GRAVITY_PRESETS.find(p => Math.abs(p.gravity - value) < 0.01);
+    const displayLabel = currentPreset ? currentPreset.label : 'Aangepast';
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedGravity = parseFloat(e.target.value);
+        if (onPresetChange) {
+            onPresetChange(selectedGravity);
+        }
+    };
+
+    return (
+        <div className="mb-6 p-4 bg-indigo-50 backdrop-blur-sm rounded-xl shadow-lg border border-indigo-200">
+            <label className="block text-sm font-semibold text-indigo-900 mb-2">
+                Zwaarteveldsterkte (<span className="italic">g</span>): {value.toFixed(2)} N/kg
+            </label>
+
+            {onPresetChange && (
+                <div className="mb-4">
+                    <select
+                        onChange={handleSelectChange}
+                        value={currentPreset ? value : ''}
+                        className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                    >
+                        {!currentPreset && (
+                            <option value="">Aangepast</option>
+                        )}
+                        {GRAVITY_PRESETS.map(p => (
+                            <option key={p.label} value={p.gravity}>
+                                {p.emoji} {p.label}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="mt-1 text-xs text-indigo-700 font-medium">
+                        Huidige selectie: {currentPreset ? `${currentPreset.emoji} ${currentPreset.label}` : displayLabel}
+                    </p>
+                </div>
+            )}
+            
+            <div className="flex items-center space-x-3">
+                <input
+                    type="range"
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={value}
+                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    style={{ accentColor: 'blue' }}
+                />
+            </div>
+        </div>
+    );
+};
+
+// Nieuwe component voor volume slider
+const VolumeSlider = ({ value, min, max, step, onChange, onPresetChange }: VolumeSliderProps) => {
+    const currentPreset = VOLUME_PRESETS.find(p => Math.abs(p.volume - value) < 0.0001);
+    const displayLabel = currentPreset ? currentPreset.label : 'Aangepast';
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedVolume = parseFloat(e.target.value);
+        if (onPresetChange) {
+            onPresetChange(selectedVolume);
+        }
+    };
+
+    return (
+        <div className="mb-6 p-4 bg-indigo-50 backdrop-blur-sm rounded-xl shadow-lg border border-indigo-200">
+            <label className="block text-sm font-semibold text-indigo-900 mb-2">
+                Volume (V): {value.toFixed(3)} m³ ({(value * 1000).toFixed(1)} L)
+            </label>
+
+            {onPresetChange && (
+                <div className="mb-4">
+                    <select
+                        onChange={handleSelectChange}
+                        value={currentPreset ? value : ''}
+                        className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                    >
+                        {!currentPreset && (
+                            <option value="">Aangepast</option>
+                        )}
+                        {VOLUME_PRESETS.map(p => (
+                            <option key={p.label} value={p.volume}>
+                                {p.emoji} {p.label}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="mt-1 text-xs text-indigo-700 font-medium">
+                        Huidige selectie: {currentPreset ? `${currentPreset.emoji} ${currentPreset.label}` : displayLabel}
+                    </p>
+                </div>
+            )}
+            
+            <div className="flex items-center space-x-3">
+                <input
+                    type="range"
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={value}
+                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    style={{ accentColor: 'blue' }}
+                />
+            </div>
+        </div>
+    );
+};
+
+interface SubmersionSliderProps {
+    value: number;
+    calculatedValue: number;
+    onChange: (value: number) => void;
+    isManual: boolean;
+    onReset: () => void;
+}
+
+// Component voor onderdompeling slider
+const SubmersionSlider = ({ value, calculatedValue, onChange, isManual, onReset }: SubmersionSliderProps) => {
+    return (
+        <div className="mb-6 p-4 bg-amber-50 backdrop-blur-sm rounded-xl shadow-lg border border-amber-300">
+            <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-semibold text-amber-900">
+                    Onderdompeling: {(value * 100).toFixed(1)}%
+                </label>
+                {isManual && (
+                    <button
+                        onClick={onReset}
+                        className="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 px-3 py-1 rounded-lg transition-colors"
+                    >
+                        Reset naar automatisch
+                    </button>
+                )}
+            </div>
+            
+            <div className="mb-2">
+                <p className="text-xs text-amber-700">
+                    {isManual ? (
+                        <>
+                            <span className="font-semibold">⚠️ Handmatige modus</span> - Je duwt het blok {value > calculatedValue ? 'onder' : 'boven'} water
+                        </>
+                    ) : (
+                        <>
+                            <span className="font-semibold">🔄 Automatische modus</span> - Berekend op basis van dichtheden
+                        </>
+                    )}
+                </p>
+            </div>
+
+            <div className="flex items-center space-x-3">
+                <input
+                    type="range"
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={value}
+                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    style={{ accentColor: isManual ? '#f59e0b' : '#6366f1' }}
+                />
+            </div>
+            
+            {isManual && (
+                <p className="mt-2 text-xs text-amber-600">
+                    Automatisch berekend zou zijn: {(calculatedValue * 100).toFixed(1)}%
+                </p>
+            )}
+        </div>
+    );
+};
+
 interface VisualizationProps {
     isZinkend: boolean;
     objectHoogte: number;
@@ -175,7 +383,7 @@ interface VisualizationProps {
     solidInfo: { label: string; color: string };
     ondergedompeldeHoogte: number;
     fluidColor: string;
-    fluidDensity: number;
+    objectBreedte: number;
 }
 
 // De visualisatie component
@@ -186,7 +394,7 @@ const Visualization = ({
     solidInfo,
     ondergedompeldeHoogte,
     fluidColor,
-    fluidDensity 
+    objectBreedte
 }: VisualizationProps) => (
     <div className="flex justify-center items-end h-[350px] w-full p-4">
         {/* Het containerbekken */}
@@ -205,7 +413,7 @@ const Visualization = ({
                 <div
                     className={`absolute left-1/2 -translate-x-1/2 rounded-md transition-all duration-500 ease-out shadow-xl`}
                     style={{
-                        width: '80px',
+                        width: objectBreedte + 'px',
                         height: objectHoogte + 'px',
                         bottom: isZinkend ? '-40px' : bovensteHoogte + 'px',
                         transform: `translateX(-50%) translateZ(0)`,
@@ -223,11 +431,6 @@ const Visualization = ({
                     ></div>
                 </div>
             </div>
-
-            {/* Label voor de vloeistof */}
-            <div className="absolute top-4 left-4 text-xs font-mono text-gray-600">
-                ρ<sub className="text-xs">v</sub>: {fluidDensity.toFixed(0)} kg/m³
-            </div>
         </div>
     </div>
 );
@@ -235,13 +438,15 @@ const Visualization = ({
 
 // De hoofdcomponent voor de Simulatie van de Wet van Archimedes
 export default function ArchimedesSimulator() {
-    const ZWAARTEKRACHT = 9.81; // N/kg
-    const MAX_VOLUME = 0.1; // Vast blokvolume voor eenvoud (100 liter)
     const MAX_FLUID_DENSITY = 2000; 
     const MAX_OBJECT_DENSITY = 8000;
 
     const [fluidDensity, setFluidDensity] = useState(FLUID_DENSITIES[1].density); // Zoet water
     const [objectDensity, setObjectDensity] = useState(MATERIAL_DENSITIES[0].density); // Hout
+    const [gravity, setGravity] = useState(GRAVITY_PRESETS[2].gravity); // Aarde
+    const [volume, setVolume] = useState(VOLUME_PRESETS[2].volume); // 0.1 m³
+    const [manualSubmersion, setManualSubmersion] = useState<number | null>(null); // Handmatige onderdompeling
+    const [isManualMode, setIsManualMode] = useState(false); // Is handmatige modus actief?
 
     const getDensityType = (density: number) => {
         if (density <= 500) return { label: 'Zeer Licht', color: 'bg-yellow-400' };
@@ -255,55 +460,66 @@ export default function ArchimedesSimulator() {
 
     const {
         objectGewicht,
-        opwaartseKracht,
-        ondergedompeldAandeel,
-        nettoKracht,
+        berekendOndergedompeldAandeel,
         isZinkend
     } = useMemo(() => {
-        const gewicht = objectDensity * MAX_VOLUME * ZWAARTEKRACHT;
+        const gewicht = objectDensity * volume * gravity;
 
         let verhouding = objectDensity / fluidDensity; 
         let ondergedompeld = 0;
-        let F_b = 0;
         let zinkend = false;
 
         if (verhouding >= 1) {
             ondergedompeld = 1;
             zinkend = (verhouding > 1);
-            F_b = fluidDensity * MAX_VOLUME * ZWAARTEKRACHT; 
         } else {
             ondergedompeld = verhouding;
-            F_b = gewicht;
         }
-
-        const F_netto = F_b - gewicht;
 
         return {
             objectGewicht: gewicht,
-            opwaartseKracht: F_b,
-            ondergedompeldAandeel: ondergedompeld,
-            nettoKracht: F_netto,
+            berekendOndergedompeldAandeel: ondergedompeld,
             isZinkend: zinkend,
         };
-    }, [fluidDensity, objectDensity]); 
+    }, [fluidDensity, objectDensity, gravity, volume]); 
+
+    // Gebruik handmatige onderdompeling als actief, anders de berekende waarde
+    const ondergedompeldAandeel = isManualMode && manualSubmersion !== null ? manualSubmersion : berekendOndergedompeldAandeel;
+
+    // Herbereken de opwaartse kracht op basis van de huidige onderdompeling
+    const actueleOpwaartseKracht = fluidDensity * volume * ondergedompeldAandeel * gravity;
+    const actueleNettoKracht = actueleOpwaartseKracht - objectGewicht;
 
     const objectHoogte = 200;
     const ondergedompeldeHoogte = ondergedompeldAandeel * objectHoogte;
     const bovensteHoogte = objectHoogte - ondergedompeldeHoogte;
 
+    // Reset handmatige modus als parameters veranderen
+    const handleParameterChange = (setter: (value: number) => void, value: number) => {
+        setter(value);
+        setIsManualMode(false);
+        setManualSubmersion(null);
+    };
+
+    // Bereken de breedte van het blok op basis van het volume
+    // Voor een kubusvorm: V = L³, dus L = ∛V
+    // We schalen dit voor de visualisatie
+    const schaalFactor = 150; // Base scaling factor
+    const objectBreedte = Math.pow(volume, 1/3) * schaalFactor;
+
     const fluidColor = fluidDensity > 1200 ? 'bg-purple-800' : fluidDensity > 1000 ? 'bg-blue-700' : 'bg-blue-500'; 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 font-sans">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 font-sans">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
-                    <Droplet className="w-10 h-10" />
-                    Archimedes Simulator
+                <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
+                    <Droplets className="w-10 h-10" />
+                    Archimedeskracht Simulator
                 </h1>
 
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Linkerkolom: Invoerbesturingen */}
-                    <div className="bg-white p-6 rounded-xl shadow-xl space-y-4 border border-indigo-100">
+                    <div className="bg-white p-8 rounded-lg shadow-lg space-y-4">
                         <h2 className="text-xl font-semibold text-indigo-900 border-b border-indigo-200 pb-2 mb-4">
                             Instellingen
                         </h2>
@@ -312,8 +528,8 @@ export default function ArchimedesSimulator() {
                             min={500}
                             max={MAX_FLUID_DENSITY}
                             step={50}
-                            onChange={setFluidDensity} 
-                            onPresetChange={setFluidDensity}
+                            onChange={(val) => handleParameterChange(setFluidDensity, val)} 
+                            onPresetChange={(val) => handleParameterChange(setFluidDensity, val)}
                             densityType="fluid"
                             solidInfo={solidInfo}
                             presets={FLUID_DENSITIES}
@@ -324,20 +540,48 @@ export default function ArchimedesSimulator() {
                             min={100}
                             max={MAX_OBJECT_DENSITY}
                             step={50}
-                            onChange={setObjectDensity} 
-                            onPresetChange={setObjectDensity}
+                            onChange={(val) => handleParameterChange(setObjectDensity, val)} 
+                            onPresetChange={(val) => handleParameterChange(setObjectDensity, val)}
                             densityType="solid"
                             solidInfo={solidInfo}
                             presets={MATERIAL_DENSITIES}
                         />
-                         <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-sm text-indigo-800">
-                            Volume (V): {MAX_VOLUME.toFixed(3)} m³ <br/>
-                            Zwaarteveldsterkte (<span className="italic">g</span>): {ZWAARTEKRACHT.toFixed(2)} N/kg
-                        </div>
+                        
+                        <GravitySlider
+                            value={gravity}
+                            min={0.5}
+                            max={30}
+                            step={0.1}
+                            onChange={(val) => handleParameterChange(setGravity, val)}
+                            onPresetChange={(val) => handleParameterChange(setGravity, val)}
+                        />
+
+                        <VolumeSlider
+                            value={volume}
+                            min={0.001}
+                            max={1.0}
+                            step={0.001}
+                            onChange={(val) => handleParameterChange(setVolume, val)}
+                            onPresetChange={(val) => handleParameterChange(setVolume, val)}
+                        />
+
+                        <SubmersionSlider
+                            value={ondergedompeldAandeel}
+                            calculatedValue={berekendOndergedompeldAandeel}
+                            onChange={(val) => {
+                                setManualSubmersion(val);
+                                setIsManualMode(true);
+                            }}
+                            isManual={isManualMode}
+                            onReset={() => {
+                                setIsManualMode(false);
+                                setManualSubmersion(null);
+                            }}
+                        />
                     </div>
 
                     {/* Rechterkolom: Visualisatie en Resultaten */}
-                    <div className="bg-white p-6 rounded-xl shadow-xl border border-indigo-100">
+                    <div className="bg-white p-8 rounded-lg shadow-lg">
                         <h2 className="text-xl font-semibold text-indigo-900 border-b border-indigo-200 pb-2 mb-4">
                             Resultaten & Visualisatie
                         </h2>
@@ -349,7 +593,7 @@ export default function ArchimedesSimulator() {
                                 solidInfo={solidInfo}
                                 ondergedompeldeHoogte={ondergedompeldeHoogte}
                                 fluidColor={fluidColor}
-                                fluidDensity={fluidDensity} 
+                                objectBreedte={objectBreedte}
                             />
                             <div className="space-y-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
                                 <ResultDisplayWithSign
@@ -369,7 +613,7 @@ export default function ArchimedesSimulator() {
                                             Opwaartse kracht F<sub className="text-xs">a</sub>
                                         </>
                                     } 
-                                    value={opwaartseKracht} 
+                                    value={actueleOpwaartseKracht} 
                                     unit="N" 
                                     color="text-indigo-600"
                                     sign="+"
@@ -377,14 +621,19 @@ export default function ArchimedesSimulator() {
                                 <ResultDisplay 
                                     label={
                                         <>
-                                            Netto Kracht F<sub className="text-xs">g</sub> + F<sub className="text-xs">a</sub>
+                                            Netto kracht F<sub className="text-xs">g</sub> + F<sub className="text-xs">a</sub>
                                         </>
                                     } 
-                                    value={nettoKracht} 
+                                    value={actueleNettoKracht} 
                                     unit="N" 
-                                    color={nettoKracht > 0 ? 'text-indigo-800 font-bold' : 'text-indigo-700'} 
+                                    color={actueleNettoKracht > 0 ? 'text-indigo-800 font-bold' : 'text-indigo-700'} 
                                 />
                                 <ResultDisplay label="Ondergedompeld deel" value={ondergedompeldAandeel * 100} unit="%" color="text-indigo-600" isPercentage={true} />
+                                {isManualMode && (
+                                    <div className="mt-2 p-2 bg-amber-100 text-amber-800 rounded text-xs text-center font-medium">
+                                        ⚠️ Handmatige onderdompeling actief
+                                    </div>
+                                )}
                                 <StatusDisplay isSinking={isZinkend} submergedRatio={ondergedompeldAandeel}/>
                             </div>
                         </div>
@@ -394,7 +643,7 @@ export default function ArchimedesSimulator() {
 
             {/* Donatie sectie - onderaan */}
             <div className="mt-8 text-center">
-                <div className="bg-white rounded-2xl shadow-lg p-6 max-w-2xl mx-auto">
+                <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">
                         Steun dit project
                     </h3>

@@ -126,7 +126,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
               id="lastig"
               checked={lastig}
               onChange={(e) => setLastig(e.target.checked)}
-              className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+              className="w-4 h-4 rounded focus:ring-indigo-500 accent-indigo-600"
             />
             <label htmlFor="lastig" className="text-sm font-medium text-gray-700">
               Lastig
@@ -229,7 +229,7 @@ function BewerkLeerlingForm({ leerling, onOpslaan, onAnnuleer }: BewerkLeerlingF
             type="checkbox"
             checked={lastig}
             onChange={(e) => setLastig(e.target.checked)}
-            className="w-4 h-4 text-indigo-600 rounded"
+            className="w-4 h-4 rounded accent-indigo-600"
           />
           Lastige leerling
         </label>

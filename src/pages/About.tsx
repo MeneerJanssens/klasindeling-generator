@@ -4,9 +4,9 @@ export default function About() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
+        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
           <Info className="w-10 h-10" />
-          Over Klasindeling.be
+          Over
         </h1>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
@@ -14,7 +14,7 @@ export default function About() {
           <div className="prose prose-lg">
             <p className="text-gray-700 mb-6">
               Welkom bij Klasindeling.be - een verzameling handige tools voor leraren om klasbeheer 
-              en natuurkunde-onderwijs eenvoudiger en interactiever te maken.
+              en fysica-onderwijs eenvoudiger en interactiever te maken.
             </p>
 
             <h2 className="text-2xl font-semibold text-indigo-800 mt-6 mb-4">
@@ -54,7 +54,7 @@ export default function About() {
 
               <div>
                 <h3 className="text-lg font-semibold text-indigo-700 mb-2">
-                  💧 Archimedes Simulator
+                  💧 Archimedeskracht Simulator
                 </h3>
                 <p className="text-sm text-gray-600">
                   Demonstreer de wet van Archimedes met verschillende materialen en vloeistoffen. 
@@ -68,7 +68,7 @@ export default function About() {
             </h2>
             <p className="text-gray-700 mb-6">
               Deze tools zijn ontwikkeld door <strong>Dietrich Janssens</strong>, een leraar met een passie 
-              voor technologie en onderwijs. Het doel is om klasbeheer en natuurkunde-onderwijs 
+              voor technologie en onderwijs. Het doel is om klasbeheer en fysica-onderwijs 
               eenvoudiger en interactiever te maken.
             </p>
 

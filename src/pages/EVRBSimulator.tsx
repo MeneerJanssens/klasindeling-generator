@@ -53,7 +53,7 @@ const InputControl = ({ label, unit, value, onChange }: InputControlProps) => (
 );
 
 // Hoofdcomponent
-export default function ERBSimulator() {
+export default function EVRBSimulator() {
   // Bewegingsparameters
   const [x0, setX0] = useState(motionFields.find(f => f.id === 'x0')!.defaultValue);
   const [v0, setV0] = useState(motionFields.find(f => f.id === 'v0')!.defaultValue);
@@ -168,15 +168,15 @@ export default function ERBSimulator() {
   const currentValues = useMemo(() => ({ x0, v0, a, t0 }), [x0, v0, a, t0]);
 
   return (
-    <div className="p-4 md:p-8 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3">
+        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
           <Car className="w-10 h-10" />
           EVRB Simulator
         </h1>
 
         {/* 1. CONTROLS PANEEL */}
-        <div className="mb-8 p-4 bg-white rounded-xl shadow-xl border border-indigo-100">
+        <div className="mb-8 p-8 bg-white rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-indigo-900 border-b border-indigo-200 pb-2">
           Bewegingsparameters
         </h2>
@@ -221,7 +221,7 @@ export default function ERBSimulator() {
       </div>
 
       {/* 2. AUTO ANIMATIE */}
-      <div className="mb-8 p-6 bg-white rounded-xl shadow-xl border border-indigo-100">
+      <div className="mb-8 p-8 bg-white rounded-lg shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-indigo-900">
           Simulatie ({time.toFixed(2)}s / {maxDuration}s)
         </h2>
@@ -276,7 +276,7 @@ export default function ERBSimulator() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Positie vs Tijd Grafiek */}
-        <div className="p-4 bg-white rounded-xl shadow-xl border border-indigo-100">
+        <div className="p-8 bg-white rounded-lg shadow-lg">
           <h2 className="text-xl font-bold mb-4 text-indigo-900">
             Positie - Tijd Grafiek: x(t)
           </h2>
@@ -307,7 +307,7 @@ export default function ERBSimulator() {
         </div>
 
         {/* Snelheid vs Tijd Grafiek */}
-        <div className="p-4 bg-white rounded-xl shadow-xl border border-indigo-100">
+        <div className="p-8 bg-white rounded-lg shadow-lg">
           <h2 className="text-xl font-bold mb-4 text-indigo-900">
             Snelheid - Tijd Grafiek: v(t)
           </h2>
@@ -340,7 +340,7 @@ export default function ERBSimulator() {
 
       {/* Donatie sectie - onderaan */}
       <div className="mt-8 text-center">
-        <div className="bg-white rounded-2xl shadow-lg p-6 max-w-2xl mx-auto">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Steun dit project
           </h3>
@@ -362,7 +362,6 @@ export default function ERBSimulator() {
         </div>
       </div>
       </div>
-      
     </div>
   );
 }
