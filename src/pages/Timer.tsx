@@ -40,17 +40,11 @@ export default function Timer() {
   }, [isRunning, timeLeft]);
 
   const playAlarm = () => {
-    // Speel 5 snelle beeps
-    let beepCount = 0;
-    const beepInterval = window.setInterval(() => {
-      if (audioRef.current && beepCount < 5) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play().catch(err => console.log('Audio play failed:', err));
-        beepCount++;
-      } else {
-        window.clearInterval(beepInterval);
-      }
-    }, 300); // 300ms tussen elke beep
+    setIsAlarmPlaying(true);
+    if (audioRef.current) {
+      audioRef.current.loop = true;
+      audioRef.current.play().catch(err => console.log('Audio play failed:', err));
+    }
   };
 
   const stopAlarm = () => {
@@ -82,7 +76,15 @@ export default function Timer() {
   };
 
   const toggleTimer = () => {
-    setIsRunning(!isRunning);
+    // If timer is at 0, reset to 00:00 instead of resuming
+    if (timeLeft === 0) {
+      setTimeLeft(0);
+      setInitialTime(0);
+      setIsRunning(false);
+      stopAlarm();
+    } else {
+      setIsRunning(!isRunning);
+    }
   };
 
   const resetTimer = () => {
@@ -102,15 +104,15 @@ export default function Timer() {
   const isLowTime = percentageLeft <= 10 && percentageLeft > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-indigo-900 mb-4 md:mb-6 text-center flex items-center justify-center gap-3 print:hidden">
-          <Clock className="w-8 h-8 md:w-10 md:h-10" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full print:hidden">
+          <Clock className="w-10 h-10" />
           Klastimer
         </h1>
 
         {/* Timer Display */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-4 md:mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
           {/* Timer Circle */}
           <div 
             className={`relative w-full max-w-sm mx-auto ${isAlarmPlaying ? 'cursor-pointer' : ''}`}
@@ -206,7 +208,7 @@ export default function Timer() {
         </div>
 
         {/* Manual Time Input */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 md:p-8 print:hidden">
+        <div className="bg-white rounded-lg shadow-lg p-8 print:hidden">
           <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center">
             Aangepaste tijd instellen
           </h2>
@@ -249,7 +251,7 @@ export default function Timer() {
                   secondsInput.value = '';
                 }
               }}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition shadow-lg hover:shadow-xl self-end"
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition shadow-lg hover:shadow-xl md:mt-5"
             >
               Start Timer
             </button>
@@ -265,13 +267,13 @@ export default function Timer() {
         {/* Hidden Audio Element */}
         <audio
           ref={audioRef}
-          src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"
+          src="/timer-alarm.mp3"
           preload="auto"
         />
 
         {/* Donatie sectie */}
         <div className="mt-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Steun dit project
             </h3>

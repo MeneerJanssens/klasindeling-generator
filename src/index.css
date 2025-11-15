@@ -8,6 +8,37 @@
     overflow-y: scroll; /* Always show vertical scrollbar to prevent layout shift */
   }
 
+  /* Print styles - force landscape orientation */
+  @media print {
+    @page {
+      size: A4 landscape;
+      margin: 10mm;
+    }
+    
+    body {
+      width: 297mm !important;
+      min-width: 297mm !important;
+    }
+    
+    /* Force desktop styles for print */
+    .overflow-x-auto {
+      overflow-x: visible !important;
+    }
+    
+    [class*="min-h-"] {
+      min-height: 80px !important;
+      min-width: auto !important;
+      padding: 0.5rem !important;
+      font-size: 1rem !important;
+    }
+    
+    /* Scale content to fit in landscape */
+    #klasindeling-resultaat {
+      transform-origin: top left;
+      width: 100% !important;
+    }
+  }
+
   /* Custom range slider styling */
   input[type="range"] {
     -webkit-appearance: none;

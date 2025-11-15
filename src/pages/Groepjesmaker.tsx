@@ -178,12 +178,44 @@ export default function Groepjesmaker() {
     if (!element) return;
 
     try {
+      // Add a class to force desktop styles
+      element.classList.add('pdf-export');
+      
+      // Add inline styles to override responsive classes
+      const style = document.createElement('style');
+      style.id = 'pdf-export-styles';
+      style.textContent = `
+        .pdf-export .overflow-x-auto {
+          overflow-x: visible !important;
+        }
+        .pdf-export .flex {
+          gap: 0.5rem !important;
+        }
+        .pdf-export [class*="min-h-"] {
+          min-height: 80px !important;
+          min-width: auto !important;
+          padding: 1rem !important;
+          font-size: 1rem !important;
+          line-height: 1.5rem !important;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Wait for styles to apply
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        windowWidth: 1200
       });
+
+      // Remove temporary styles
+      element.classList.remove('pdf-export');
+      const tempStyle = document.getElementById('pdf-export-styles');
+      if (tempStyle) tempStyle.remove();
 
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -207,13 +239,11 @@ export default function Groepjesmaker() {
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Er is een fout opgetreden bij het genereren van de PDF.');
-    }
-  };
-
-  const wisAlleData = () => {
-    if (confirm('Weet je zeker dat je alle leerlingen en groepen wilt verwijderen?')) {
-      setLeerlingen([]);
-      setGroepen([]);
+      // Clean up in case of error
+      const element = document.getElementById('groepsindeling-resultaat');
+      if (element) element.classList.remove('pdf-export');
+      const tempStyle = document.getElementById('pdf-export-styles');
+      if (tempStyle) tempStyle.remove();
     }
   };
 
@@ -233,30 +263,16 @@ export default function Groepjesmaker() {
           />
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <div className="flex items-center justify-between mb-6">
-            {leerlingen.length > 0 && (
-              <button
-                onClick={wisAlleData}
-                className="px-3 py-1 text-sm text-red-600 hover:text-red-800 border border-red-300 rounded hover:bg-red-50 transition ml-auto"
-              >
-                Alles wissen
-              </button>
-            )}
-          </div>
+        {/* Leerlingen input component */}
+        <LeerlingenInput 
+          leerlingen={leerlingen}
+          setLeerlingen={setLeerlingen}
+        />
 
-          {/* Leerlingen input component */}
-          <div className="mb-6">
-            <LeerlingenInput 
-              leerlingen={leerlingen}
-              setLeerlingen={setLeerlingen}
-            />
-          </div>
-
-          {/* Groepsinstellingen */}
-          {leerlingen.length > 0 && (
-            <div className="border-t pt-6">
-              <h3 className="font-semibold text-gray-700 mb-4">Groepsindeling</h3>
+        {/* Groepsinstellingen */}
+        {leerlingen.length > 0 && (
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+            <h3 className="font-semibold text-gray-700 mb-4">Groepsindeling</h3>
               
               <div className="flex gap-4 mb-4 flex-wrap">
                 <label className="flex items-center gap-2">
@@ -309,9 +325,8 @@ export default function Groepjesmaker() {
                 <RefreshCw className="w-5 h-5" />
                 Maak Groepen
               </button>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Groepen weergave */}
         {groepen.length > 0 && (
@@ -351,24 +366,10 @@ export default function Groepjesmaker() {
             </div>
 
             <div className="flex justify-end items-center mb-6 flex-wrap gap-3">
-              <div className="flex gap-2 flex-wrap">
-                <button
-                  onClick={handlePrint}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
-                >
-                  <Printer className="w-4 h-4" />
-                  Print
-                </button>
-                <button
-                  onClick={handleDownloadPDF}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Download PDF
-                </button>
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => setBewerkMode(!bewerkMode)}
-                  className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
+                  className={`w-full sm:min-w-[160px] sm:w-auto px-4 py-2 rounded-lg transition flex items-center justify-center gap-2 ${
                     bewerkMode
                       ? 'bg-green-600 text-white hover:bg-green-700'
                       : 'bg-indigo-600 text-white hover:bg-indigo-700'
@@ -385,6 +386,20 @@ export default function Groepjesmaker() {
                       Aanpassen
                     </>
                   )}
+                </button>
+                <button
+                  onClick={handlePrint}
+                  className="w-full sm:min-w-[160px] sm:w-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
+                >
+                  <Printer className="w-4 h-4" />
+                  Print
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  className="w-full sm:min-w-[160px] sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download PDF
                 </button>
               </div>
             </div>

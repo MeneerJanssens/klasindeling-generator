@@ -213,7 +213,17 @@ export default function KlasindelingApp() {
   };
 
   const handlePrint = () => {
-    window.print();
+    // Check if on mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      alert('💡 Tip: Selecteer landscape (liggend) voor het beste printresultaat.');
+    }
+    
+    // Give user a moment to rotate if needed
+    setTimeout(() => {
+      window.print();
+    }, isMobile ? 500 : 0);
   };
 
   const handleDownloadPDF = async () => {
@@ -221,13 +231,45 @@ export default function KlasindelingApp() {
     if (!element) return;
 
     try {
+      // Add a class to force desktop styles
+      element.classList.add('pdf-export');
+      
+      // Add inline styles to override responsive classes
+      const style = document.createElement('style');
+      style.id = 'pdf-export-styles';
+      style.textContent = `
+        .pdf-export .overflow-x-auto {
+          overflow-x: visible !important;
+        }
+        .pdf-export .flex {
+          gap: 0.5rem !important;
+        }
+        .pdf-export [class*="min-h-"] {
+          min-height: 80px !important;
+          min-width: auto !important;
+          padding: 1rem !important;
+          font-size: 1rem !important;
+          line-height: 1.5rem !important;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Wait for styles to apply
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Create canvas from the element
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        windowWidth: 1200
       });
+
+      // Remove temporary styles
+      element.classList.remove('pdf-export');
+      const tempStyle = document.getElementById('pdf-export-styles');
+      if (tempStyle) tempStyle.remove();
 
       // Calculate dimensions for A4 landscape
       const imgWidth = 297; // A4 landscape width in mm
@@ -250,6 +292,11 @@ export default function KlasindelingApp() {
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Er is een fout opgetreden bij het genereren van de PDF.');
+      // Clean up in case of error
+      const element = document.getElementById('klasindeling-resultaat');
+      if (element) element.classList.remove('pdf-export');
+      const tempStyle = document.getElementById('pdf-export-styles');
+      if (tempStyle) tempStyle.remove();
     }
   };
 
@@ -346,30 +393,32 @@ export default function KlasindelingApp() {
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Kies lege ruimtes (klik op vakjes om te blokkeren/deblokkeren)
             </h3>
-            <div className="grid gap-2 max-w-4xl mx-auto" style={{ gridTemplateColumns: `repeat(${kolommen}, 1fr)` }}>
-              {Array.from({ length: rijen }).map((_, rijIndex) => {
-                return Array.from({ length: kolommen }).map((_, kolomIndex) => {
-                  const key = `${rijIndex}-${kolomIndex}`;
-                  const isGeblokkeerd = geblokkeerd.has(key);
-                  return (
-                    <button
-                      key={key}
-                      onClick={() => toggleBlok(rijIndex, kolomIndex)}
-                      className={`h-16 rounded-lg border-2 flex items-center justify-center transition ${
-                        isGeblokkeerd
-                          ? 'bg-red-100 border-red-400 hover:bg-red-200'
-                          : 'bg-green-50 border-green-300 hover:bg-green-100'
-                      }`}
-                    >
-                      {isGeblokkeerd ? (
-                        <X className="w-6 h-6 text-red-600" />
-                      ) : (
-                        <span className="text-xs text-gray-500">Plaats</span>
-                      )}
-                    </button>
-                  );
-                });
-              })}
+            <div className="overflow-x-auto">
+              <div className="grid gap-1 md:gap-2 max-w-4xl mx-auto min-w-min" style={{ gridTemplateColumns: `repeat(${kolommen}, minmax(60px, 1fr))` }}>
+                {Array.from({ length: rijen }).map((_, rijIndex) => {
+                  return Array.from({ length: kolommen }).map((_, kolomIndex) => {
+                    const key = `${rijIndex}-${kolomIndex}`;
+                    const isGeblokkeerd = geblokkeerd.has(key);
+                    return (
+                      <button
+                        key={key}
+                        onClick={() => toggleBlok(rijIndex, kolomIndex)}
+                        className={`h-14 md:h-16 rounded-lg border-2 flex items-center justify-center transition ${
+                          isGeblokkeerd
+                            ? 'bg-red-100 border-red-400 hover:bg-red-200'
+                            : 'bg-green-50 border-green-300 hover:bg-green-100'
+                        }`}
+                      >
+                        {isGeblokkeerd ? (
+                          <X className="w-5 h-5 md:w-6 md:h-6 text-red-600" />
+                        ) : (
+                          <span className="text-xs text-gray-500">Plaats</span>
+                        )}
+                      </button>
+                    );
+                  });
+                })}
+              </div>
             </div>
             <div className="mt-4 text-center text-sm text-gray-600 font-medium">
               Bord
@@ -427,15 +476,15 @@ export default function KlasindelingApp() {
 
         {/* Resultaat - zichtbaar op scherm en bij printen */}
         {toonResultaat && (
-          <div id="klasindeling-resultaat" className="bg-white rounded-lg shadow-lg p-8 print:shadow-none print:p-0 print:rounded-none">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6 print:mb-4 print:text-3xl">
-              Klasindeling - {klasNaam || 'Meneer Janssens'}
+          <div id="klasindeling-resultaat" className="bg-white rounded-lg shadow-lg p-4 md:p-8 print:shadow-none print:p-0 print:rounded-none">
+            <h2 className="text-xl md:text-2xl font-bold text-center text-gray-800 mb-4 md:mb-6 print:mb-4 print:text-3xl">
+              Klasindeling - {klasNaam || 'via klasindeling.be'}
             </h2>
             
-            <div>
-              <div className="flex flex-col gap-2 print:gap-3">
+            <div className="overflow-x-auto">
+              <div className="flex flex-col gap-1 md:gap-2 print:gap-3 min-w-min">
                 {indeling.map((rij, rijIndex) => (
-                  <div key={rijIndex} className="flex gap-2 print:gap-3">
+                  <div key={rijIndex} className="flex gap-1 md:gap-2 print:gap-3">
                     {rij.map((leerling, kolomIndex) => {
                       const positieKey = `${rijIndex}-${kolomIndex}`;
                       const isGeblokkeerd = geblokkeerd.has(positieKey);
@@ -448,7 +497,7 @@ export default function KlasindelingApp() {
                           onDragStart={(e) => handleDragStart(e, rijIndex, kolomIndex)}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, rijIndex, kolomIndex)}
-                          className={`border-2 rounded-lg p-4 text-center min-h-[80px] flex flex-col items-center justify-center transition print:min-h-[70px] print:p-2 print:border ${
+                          className={`border-2 rounded-lg p-2 md:p-4 text-center min-h-[60px] md:min-h-[80px] min-w-[60px] md:min-w-0 flex flex-col items-center justify-center transition print:min-h-[70px] print:p-2 print:border text-xs md:text-base ${
                             isGeblokkeerd
                               ? 'bg-gray-200 border-gray-300 print:bg-white print:border-gray-300'
                               : leerling
@@ -463,7 +512,7 @@ export default function KlasindelingApp() {
                         >
                           {leerling ? (
                             <>
-                              <span className="font-medium print:text-base text-gray-800 print:text-black">
+                              <span className="font-medium print:text-base text-gray-800 print:text-black break-words">
                                 {leerling.naam}
                               </span>
                               <span className="text-xs mt-1 print:hidden">
@@ -473,7 +522,7 @@ export default function KlasindelingApp() {
                               </span>
                             </>
                           ) : !isGeblokkeerd ? (
-                            <span className="text-gray-400 text-sm print:text-gray-300">
+                            <span className="text-gray-400 text-xs md:text-sm print:text-gray-300">
                               (leeg)
                             </span>
                           ) : null}
@@ -485,7 +534,7 @@ export default function KlasindelingApp() {
               </div>
             </div>
 
-            <div className="mt-6 text-center text-sm text-gray-600 print:mt-4 print:text-base print:text-black">
+            <div className="mt-4 md:mt-6 text-center text-sm text-gray-600 print:mt-4 print:text-base print:text-black">
               <p className="font-medium">Bord</p>
             </div>
           </div>

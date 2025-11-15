@@ -110,14 +110,14 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
             />
           </div>
           
-          <div>
+          <div className="flex-1 md:flex-initial min-w-[200px] md:min-w-0">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Geslacht
             </label>
             <select
               value={geslacht}
               onChange={(e) => setGeslacht(e.target.value as 'm' | 'v')}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
             >
               <option value="m">Jongen</option>
               <option value="v">Meisje</option>
@@ -154,7 +154,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
 
           <button
             onClick={voegLeerlingToe}
-            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
+            className="w-full flex-1 min-w-[200px] px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Toevoegen

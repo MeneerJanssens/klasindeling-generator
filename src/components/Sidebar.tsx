@@ -12,8 +12,8 @@ export default function Sidebar({ currentPage }: SidebarProps) {
   const menuItems = [
     { id: 'home', label: 'Klasindeling', icon: Armchair, path: '/klasindeling' },
     { id: 'groepjesmaker', label: 'Groepjesmaker', icon: UsersIcon, path: '/groepjesmaker' },
-    { id: 'timer', label: 'Timer', icon: Clock, path: '/timer' },
     { id: 'namenkiezer', label: 'Namenkiezer', icon: Shuffle, path: '/namenkiezer' },
+    { id: 'timer', label: 'Timer', icon: Clock, path: '/timer' },
     { id: 'erb-simulator', label: 'EVRB Simulator', icon: Car, path: '/evrb-simulator' },
     { id: 'archimedes-simulator', label: 'Archimedeskracht Simulator', icon: Droplets, path: '/archimedeskracht-simulator' },
     { id: 'about', label: 'Over', icon: Info, path: '/over' },
@@ -47,7 +47,7 @@ export default function Sidebar({ currentPage }: SidebarProps) {
           print:hidden
         `}
       >
-        <div className="p-6">
+        <div className="p-6 pt-16 lg:pt-6">
           <h2 className="text-2xl font-bold text-indigo-900 mb-8">
             Klasindeling.be
           </h2>

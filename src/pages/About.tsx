@@ -44,6 +44,26 @@ export default function About() {
 
               <div>
                 <h3 className="text-lg font-semibold text-indigo-700 mb-2">
+                  🎲 Namenkiezer
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Kies willekeurig een naam uit je klas met een animatie. 
+                  Perfect om eerlijk leerlingen aan de beurt te laten komen.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-indigo-700 mb-2">
+                  ⏱️ Timer
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Eenvoudige klaslokaal timer met vooringestelde tijden en aangepaste intervallen. 
+                  Ideaal voor toetsen, groepswerk en activiteiten.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-indigo-700 mb-2">
                   🚗 EVRB Simulator
                 </h3>
                 <p className="text-sm text-gray-600">

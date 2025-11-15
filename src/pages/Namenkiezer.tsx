@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Users, Shuffle, Trash2, Plus } from 'lucide-react';
+import { Shuffle, Trash2, Plus } from 'lucide-react';
 import { loadKlassen, type OpgeslagenKlas } from '../utils/klasStorage';
 
 export default function Namenkiezer() {
@@ -56,16 +56,16 @@ export default function Namenkiezer() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-indigo-900 mb-4 md:mb-6 text-center flex items-center justify-center gap-3">
-          <Users className="w-8 h-8 md:w-10 md:h-10" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
+          <Shuffle className="w-10 h-10" />
           Namenkiezer
         </h1>
 
         {/* Klas Selectie */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Selecteer een klas
           </h2>
           {opgeslagenKlassen.length === 0 ? (
@@ -95,11 +95,11 @@ export default function Namenkiezer() {
         </div>
 
         {/* Leerlingen toevoegen */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-6">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Leerlingen beheren
           </h2>
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-col sm:flex-row gap-2 mb-4">
             <input
               type="text"
               value={nieuweLeerling}
@@ -110,7 +110,7 @@ export default function Namenkiezer() {
             />
             <button
               onClick={voegLeerlingToe}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2 justify-center sm:justify-start whitespace-nowrap"
             >
               <Plus className="w-5 h-5" />
               Toevoegen
@@ -141,7 +141,7 @@ export default function Namenkiezer() {
 
         {/* Naam Kiezer */}
         {leerlingen.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 mb-6">
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
             <div className="text-center">
               <button
                 onClick={kiesWillekeurigeNaam}
@@ -174,7 +174,7 @@ export default function Namenkiezer() {
 
         {/* Donatie sectie */}
         <div className="mt-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Steun dit project
             </h3>

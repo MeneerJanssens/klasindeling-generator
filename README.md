@@ -12,22 +12,42 @@ A comprehensive React application built with Vite and TypeScript, providing mult
 - Mark students as "difficult" for strategic placement
 - Block specific seats in the classroom
 - Generate random seating arrangements with gender balance
+- Drag-and-drop students to empty spaces
 - Save and load multiple classroom layouts
 - Print-friendly layout
+- Download as PDF
 - Persistent storage with LocalStorage
 
 ### 2. Groepjesmaker (Group Generator)
 - Create random student groups
 - Two distribution methods: by group size or number of groups
-- Automatic distribution of "difficult" students
+- Smart distribution algorithm ensuring equal group sizes
+- Automatic distribution of "difficult" students across groups
 - Gender balance in groups
 - Edit mode for manual adjustments
 - Move students between groups
-- **Download as PDF** with custom title and extra text
-- **Print functionality** with compact layout
+- Add new groups dynamically
+- Download as PDF with custom title and extra text
+- Print functionality without opening new tab
 - Save group configurations
 
-### 3. EVRB Simulator (Uniformly Accelerated Motion)
+### 3. Namenkiezer (Name Picker)
+- Load student lists from saved classes
+- Add or remove students on the fly
+- Animated random name selection
+- Perfect for calling on students randomly
+- Fair selection algorithm
+- Clean, simple interface
+
+### 4. Timer
+- Quick preset buttons: 1, 2, 5, 10, and 15 minutes
+- Custom time input (minutes and seconds)
+- Large, visible countdown display
+- Audio alert when time is up
+- Pause and resume functionality
+- Perfect for classroom activities and tests
+
+### 5. EVRB Simulator (Uniformly Accelerated Motion)
 - Simulate uniformly accelerated rectilinear motion
 - Adjustable parameters:
   - Starting position (x₀)
@@ -35,23 +55,33 @@ A comprehensive React application built with Vite and TypeScript, providing mult
   - Acceleration (a)
   - Start time (t₀)
 - Real-time animation with 60 FPS
-- Interactive speed control (0.5x to 4x)
+- Interactive speed control (1x and 2x)
 - Live graphs showing position and velocity over time
-- Visual car animation
+- Visual car animation on dynamic track
+- Responsive display for mobile and desktop
 - Educational tool for physics lessons
 
-### 4. Archimedes Simulator
-- Demonstrate Archimedes' principle
+### 6. Archimedeskracht Simulator (Archimedes' Principle)
+- Demonstrate Archimedes' principle with interactive visualization
 - Preset materials: Wood, Ice, Water, Brick, Aluminum, Iron
 - Preset fluids: Kerosene, Fresh water, Salt water, Glycerin, Mercury
+- Adjustable parameters:
+  - Fluid density with emoji presets
+  - Block density with emoji presets
+  - Gravity (Moon, Mars, Earth, Jupiter, Sun)
+  - Volume (0.001 m³ to 1 m³)
+- Manual submersion control:
+  - Automatic mode: Calculated based on densities
+  - Manual mode: Push block underwater or hold it up
+  - Visual feedback showing force differences
 - Real-time calculations:
   - Block weight (F_g)
   - Buoyant force (F_a)
   - Net force
   - Submerged percentage
 - Visual animation showing floating/sinking behavior
-- Adjustable density sliders
-- Custom material and fluid support
+- Dynamic block size based on volume
+- Color-coded fluids and materials
 
 ## 🚀 Getting Started
 
@@ -118,14 +148,20 @@ All classroom data and configurations are saved locally using LocalStorage:
 
 Both simulators use proper physics formulas and conventions:
 - **EVRB**: x(t) = x₀ + v₀(t-t₀) + ½a(t-t₀)²
-- **Archimedes**: F_a = ρ_v × V × g
+- **Archimedeskracht**: 
+  - Buoyant force: F_a = ρ_v × V × g × (submerged fraction)
+  - Net force: F_net = F_a - F_g
+  - Automatic calculation of equilibrium position
+  - Manual override for educational demonstrations
 
 ## 🌐 Pages
 
 - **Klasindeling** - Main classroom seating tool
 - **Groepjesmaker** - Group generator
+- **Namenkiezer** - Random name picker
+- **Timer** - Classroom timer with presets
 - **EVRB Simulator** - Physics motion simulator
-- **Archimedes Simulator** - Buoyancy demonstrator
+- **Archimedeskracht Simulator** - Buoyancy demonstrator
 - **Over** - About page with tool descriptions
 - **Contact** - Contact form and information
 

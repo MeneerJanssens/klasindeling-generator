@@ -227,10 +227,10 @@ export default function EVRBSimulator() {
         </h2>
         
         {/* Display Current State */}
-        <div className="mb-4 text-center text-lg font-mono">
-            <span className="text-indigo-600 mr-4">Positie: x = {currentX.toFixed(2)} m</span>
-            <span className="text-green-600">Snelheid: v = {currentV.toFixed(2)} m/s</span>
-            {currentMotion.isStarted === false && <span className="ml-4 text-red-500">(Wacht op Start Tijd t₀)</span>}
+        <div className="mb-4 text-center text-lg font-mono flex flex-col md:flex-row md:justify-center gap-2 md:gap-0">
+            <span className="text-indigo-600 md:mr-4">Positie: x = <span className="whitespace-nowrap">{currentX.toFixed(2)} m</span></span>
+            <span className="text-green-600">Snelheid: v = <span className="whitespace-nowrap">{currentV.toFixed(2)} m/s</span></span>
+            {currentMotion.isStarted === false && <span className="md:ml-4 text-red-500">(Wacht op Start Tijd t₀)</span>}
         </div>
 
         {/* De Baan */}
