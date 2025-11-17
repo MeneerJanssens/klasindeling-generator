@@ -7,31 +7,29 @@
   to = "/index.html"
   status = 200
 
-# JavaScript modules - ensure correct MIME type
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Content-Type = "application/javascript; charset=utf-8"
-    Cache-Control = "public, max-age=31536000, immutable"
-
+# JavaScript modules - must come BEFORE other headers
 [[headers]]
   for = "/assets/*.js"
   [headers.values]
-    Content-Type = "application/javascript; charset=utf-8"
+    Content-Type = "text/javascript; charset=utf-8"
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Type = "text/javascript; charset=utf-8"
 
 # CSS files
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Content-Type = "text/css; charset=utf-8"
-    Cache-Control = "public, max-age=31536000, immutable"
-
 [[headers]]
   for = "/assets/*.css"
   [headers.values]
     Content-Type = "text/css; charset=utf-8"
     Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Content-Type = "text/css; charset=utf-8"
 
 # All other assets
 [[headers]]
@@ -39,7 +37,7 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Security headers for HTML
+# Security headers for HTML - comes last
 [[headers]]
   for = "/*"
   [headers.values]
