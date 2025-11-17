@@ -133,6 +133,16 @@ interface VolumeSliderProps {
     onPresetChange?: (value: number) => void;
 }
 
+// Utility function to update slider background based on value
+const updateSliderBackground = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
+    const min = parseFloat(target.min);
+    const max = parseFloat(target.max);
+    const val = parseFloat(target.value);
+    const percentage = ((val - min) / (max - min)) * 100;
+    target.style.setProperty('--value-percent', `${percentage}%`);
+};
+
 // Tailwind CSS Utility Component voor invoer sliders
 const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo, onPresetChange, presets }: DensitySliderProps) => {
     
@@ -161,10 +171,15 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
 
             {onPresetChange && presets && (
                 <div className="mb-4">
+                    <label htmlFor={`density-select-${densityType}`} className="sr-only">
+                        {labelText} preset selecteren
+                    </label>
                     <select
+                        id={`density-select-${densityType}`}
                         onChange={handleSelectChange}
                         value={currentPreset ? value : ''}
                         className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                        aria-label={`${labelText} preset selecteren`}
                     >
                         {!currentPreset && (
                             <option value="">Aangepast ({densityType === 'fluid' ? 'Vloeistof' : 'Blok'})</option>
@@ -184,13 +199,25 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
             <div className="flex items-center space-x-3">
                 <input
                     type="range"
+                    id={`density-range-${densityType}`}
                     min={min}
                     max={max}
                     step={step}
                     value={value}
-                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    onChange={(e) => {
+                        updateSliderBackground(e);
+                        onChange(parseFloat(e.target.value));
+                    }}
+                    onInput={updateSliderBackground}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
-                    style={{ accentColor: densityType === 'solid' && solidInfo ? solidInfo.color.split('-')[1] : 'blue' }}
+                    style={{ 
+                        accentColor: densityType === 'solid' && solidInfo ? solidInfo.color.split('-')[1] : 'blue',
+                        '--value-percent': `${((value - min) / (max - min)) * 100}%`
+                    } as React.CSSProperties}
+                    aria-label={`${labelText} aanpassen`}
+                    aria-valuemin={min}
+                    aria-valuemax={max}
+                    aria-valuenow={value}
                 />
             </div>
             {densityType === 'solid' && solidInfo && (
@@ -222,10 +249,13 @@ const GravitySlider = ({ value, min, max, step, onChange, onPresetChange }: Grav
 
             {onPresetChange && (
                 <div className="mb-4">
+                    <label htmlFor="gravity-select" className="sr-only">Zwaartekracht preset selecteren</label>
                     <select
+                        id="gravity-select"
                         onChange={handleSelectChange}
                         value={currentPreset ? value : ''}
                         className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                        aria-label="Zwaartekracht preset selecteren"
                     >
                         {!currentPreset && (
                             <option value="">Aangepast</option>
@@ -245,13 +275,25 @@ const GravitySlider = ({ value, min, max, step, onChange, onPresetChange }: Grav
             <div className="flex items-center space-x-3">
                 <input
                     type="range"
+                    id="gravity-range"
                     min={min}
                     max={max}
                     step={step}
                     value={value}
-                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    onChange={(e) => {
+                        updateSliderBackground(e);
+                        onChange(parseFloat(e.target.value));
+                    }}
+                    onInput={updateSliderBackground}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
-                    style={{ accentColor: 'blue' }}
+                    style={{ 
+                        accentColor: 'blue',
+                        '--value-percent': `${((value - min) / (max - min)) * 100}%`
+                    } as React.CSSProperties}
+                    aria-label="Zwaartekracht aanpassen"
+                    aria-valuemin={min}
+                    aria-valuemax={max}
+                    aria-valuenow={value}
                 />
             </div>
         </div>
@@ -278,10 +320,13 @@ const VolumeSlider = ({ value, min, max, step, onChange, onPresetChange }: Volum
 
             {onPresetChange && (
                 <div className="mb-4">
+                    <label htmlFor="volume-select" className="sr-only">Volume preset selecteren</label>
                     <select
+                        id="volume-select"
                         onChange={handleSelectChange}
                         value={currentPreset ? value : ''}
                         className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                        aria-label="Volume preset selecteren"
                     >
                         {!currentPreset && (
                             <option value="">Aangepast</option>
@@ -301,13 +346,25 @@ const VolumeSlider = ({ value, min, max, step, onChange, onPresetChange }: Volum
             <div className="flex items-center space-x-3">
                 <input
                     type="range"
+                    id="volume-range"
                     min={min}
                     max={max}
                     step={step}
                     value={value}
-                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    onChange={(e) => {
+                        updateSliderBackground(e);
+                        onChange(parseFloat(e.target.value));
+                    }}
+                    onInput={updateSliderBackground}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
-                    style={{ accentColor: 'blue' }}
+                    style={{ 
+                        accentColor: 'blue',
+                        '--value-percent': `${((value - min) / (max - min)) * 100}%`
+                    } as React.CSSProperties}
+                    aria-label="Volume aanpassen"
+                    aria-valuemin={min}
+                    aria-valuemax={max}
+                    aria-valuenow={value}
                 />
             </div>
         </div>
@@ -357,13 +414,26 @@ const SubmersionSlider = ({ value, calculatedValue, onChange, isManual, onReset 
             <div className="flex items-center space-x-3">
                 <input
                     type="range"
+                    id="submersion-range"
                     min={0}
                     max={1}
                     step={0.01}
                     value={value}
-                    onChange={(e) => onChange(parseFloat(e.target.value))}
+                    onChange={(e) => {
+                        updateSliderBackground(e);
+                        onChange(parseFloat(e.target.value));
+                    }}
+                    onInput={updateSliderBackground}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
-                    style={{ accentColor: isManual ? '#f59e0b' : '#6366f1' }}
+                    style={{ 
+                        accentColor: isManual ? '#f59e0b' : '#6366f1',
+                        '--value-percent': `${value * 100}%`,
+                        background: `linear-gradient(to right, ${isManual ? '#f59e0b' : '#4f46e5'} 0%, ${isManual ? '#f59e0b' : '#4f46e5'} ${value * 100}%, #e5e7eb ${value * 100}%, #e5e7eb 100%)`
+                    } as React.CSSProperties}
+                    aria-label="Onderdompeling percentage aanpassen"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={Math.round(value * 100)}
                 />
             </div>
             
@@ -510,12 +580,18 @@ export default function ArchimedesSimulator() {
     const fluidColor = fluidDensity > 1200 ? 'bg-purple-800' : fluidDensity > 1000 ? 'bg-blue-700' : 'bg-blue-500'; 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 font-sans">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8 font-sans">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
-                    <Droplets className="w-10 h-10" />
-                    Archimedeskracht Simulator
-                </h1>
+                <div className="mb-8 text-center">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+                        <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+                            <Droplets className="w-9 h-9 text-white" />
+                        </div>
+                        <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+                            Archimedeskracht Simulator
+                        </h1>
+                    </div>
+                </div>
 
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Linkerkolom: Invoerbesturingen */}
@@ -642,26 +718,28 @@ export default function ArchimedesSimulator() {
             </div>
 
             {/* Donatie sectie - onderaan */}
-            <div className="mt-8 text-center">
-                <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                        Steun dit project
-                    </h3>
-                    <p className="text-gray-600 mb-4">
+            <div className="mt-8 max-w-4xl mx-auto">
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white border border-indigo-500/20">
+                    <h2 className="text-xl font-bold mb-2 text-center">
+                        ❤️ Steun dit project
+                    </h2>
+                    <p className="mb-6 text-center text-indigo-100">
                         Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
                     </p>
-                    <a 
-                        href='https://ko-fi.com/Z8Z01G7O8R' 
-                        target='_blank' 
-                        rel='noopener noreferrer'
-                        className="inline-block"
-                    >
-                        <img 
-                            src='https://ko-fi.com/img/githubbutton_sm.svg' 
-                            alt='Steun me op Ko-fi' 
-                            className="mx-auto"
-                        />
-                    </a>
+                    <div className="flex justify-center">
+                        <a 
+                            href='https://ko-fi.com/Z8Z01G7O8R' 
+                            target='_blank' 
+                            rel='noopener noreferrer'
+                            className="inline-block transform hover:scale-105 transition"
+                        >
+                            <img 
+                                src='/support_me_on_kofi_dark.png' 
+                                alt='Steun me op Ko-fi' 
+                                className="mx-auto h-12"
+                            />
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

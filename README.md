@@ -9,7 +9,7 @@ A comprehensive React application built with Vite and TypeScript, providing mult
 ### 1. Klasindeling (Classroom Seating)
 - Input student names with gender selection
 - Customize grid size (rows and columns)
-- Mark students as "difficult" for strategic placement
+- Mark students as "noisy" for strategic placement
 - Block specific seats in the classroom
 - Generate random seating arrangements with gender balance
 - Drag-and-drop students to empty spaces
@@ -22,7 +22,7 @@ A comprehensive React application built with Vite and TypeScript, providing mult
 - Create random student groups
 - Two distribution methods: by group size or number of groups
 - Smart distribution algorithm ensuring equal group sizes
-- Automatic distribution of "difficult" students across groups
+- Automatic distribution of "noisy" students across groups
 - Gender balance in groups
 - Edit mode for manual adjustments
 - Move students between groups
@@ -47,7 +47,15 @@ A comprehensive React application built with Vite and TypeScript, providing mult
 - Pause and resume functionality
 - Perfect for classroom activities and tests
 
-### 5. EVRB Simulator (Uniformly Accelerated Motion)
+### 5. QR-Code Generator
+- Generate QR codes from any URL
+- Adjustable QR code size (128px to 512px)
+- High error correction level for reliability
+- Download as PNG image
+- Clean preview with gradient styling
+- Perfect for creating classroom resources
+
+### 6. EVRB Simulator (Uniformly Accelerated Motion)
 - Simulate uniformly accelerated rectilinear motion
 - Adjustable parameters:
   - Starting position (x₀)
@@ -61,7 +69,7 @@ A comprehensive React application built with Vite and TypeScript, providing mult
 - Responsive display for mobile and desktop
 - Educational tool for physics lessons
 
-### 6. Archimedeskracht Simulator (Archimedes' Principle)
+### 7. Archimedeskracht Simulator (Archimedes' Principle)
 - Demonstrate Archimedes' principle with interactive visualization
 - Preset materials: Wood, Ice, Water, Brick, Aluminum, Iron
 - Preset fluids: Kerosene, Fresh water, Salt water, Glycerin, Mercury
@@ -112,6 +120,7 @@ npm run preview
 - **Vite** - Build tool and dev server
 - **Tailwind CSS** - Styling
 - **Lucide React** - Icon library
+- **QRCode.react** - QR code generation
 - **Recharts** - Data visualization for simulators
 - **jsPDF & html2canvas** - PDF generation
 - **LocalStorage** - Data persistence
@@ -125,10 +134,12 @@ npm run preview
 
 ## 🎨 Design System
 
-- Unified indigo color theme
-- Consistent spacing and shadows
+- Unified gradient design across all pages
+- Gradient backgrounds: indigo-100 → purple-50 → blue-100
+- Gradient text headings: indigo-600 → purple-600 → pink-600
+- Consistent icon boxes with gradient styling
 - Smooth animations and transitions
-- Accessible components
+- Accessible components with WCAG compliance
 - Print-friendly layouts
 
 ## 💾 Data Persistence
@@ -160,10 +171,18 @@ Both simulators use proper physics formulas and conventions:
 - **Groepjesmaker** - Group generator
 - **Namenkiezer** - Random name picker
 - **Timer** - Classroom timer with presets
+- **QR-Code Generator** - Generate QR codes from URLs
 - **EVRB Simulator** - Physics motion simulator
 - **Archimedeskracht Simulator** - Buoyancy demonstrator
 - **Over** - About page with tool descriptions
 - **Contact** - Contact form and information
+
+## 🍪 Privacy & Compliance
+
+- **Cookie Consent**: GDPR-compliant cookie banner
+- **Google Analytics**: Only loads after user consent
+- **LocalStorage**: All user data stored locally on device
+- **No Server**: All processing happens client-side
 
 ## 💖 Support
 

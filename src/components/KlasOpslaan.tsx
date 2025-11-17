@@ -66,17 +66,19 @@ export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, k
       <div className="grid md:grid-cols-2 gap-4">
         {/* Klas laden */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="klas-select" className="block text-sm font-medium text-gray-700 mb-2">
             Laad een klas:
           </label>
           <div className="flex flex-col sm:flex-row gap-2">
             <select
+              id="klas-select"
               value={geselecteerdeKlas}
               onChange={(e) => {
                 setGeselecteerdeKlas(e.target.value);
                 if (e.target.value) laadKlas(e.target.value);
               }}
               className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
+              aria-label="Selecteer een klas om te laden"
             >
               <option value="">-- Selecteer een klas --</option>
               {opgeslagenKlassen.map(klas => (

@@ -23,7 +23,7 @@ async function generateIcons() {
     console.log(`Generated ${name}`);
   }
   
-  // Generate favicon.ico (contains 16x16 and 32x32)
+  // Generate favicon.ico (contains 16x16, 32x32, and 48x48)
   const ico16 = await sharp(svgContent)
     .resize(16, 16)
     .png()
@@ -34,12 +34,17 @@ async function generateIcons() {
     .png()
     .toBuffer();
   
+  const ico48 = await sharp(svgContent)
+    .resize(48, 48)
+    .png()
+    .toBuffer();
+  
   // Create a simple ICO file structure
   // ICO format: Header (6 bytes) + Directory entries (16 bytes each) + PNG data
   const icoHeader = Buffer.from([
     0, 0,           // Reserved (must be 0)
     1, 0,           // Type (1 = ICO)
-    2, 0            // Number of images
+    3, 0            // Number of images
   ]);
   
   const createDirEntry = (size, offset, imageSize) => Buffer.from([
@@ -53,18 +58,22 @@ async function generateIcons() {
     ...Buffer.from(new Uint32Array([offset]).buffer)      // Image offset
   ]);
   
-  const offset16 = 6 + (16 * 2); // Header + 2 directory entries
+  const offset16 = 6 + (16 * 3); // Header + 3 directory entries
   const offset32 = offset16 + ico16.length;
+  const offset48 = offset32 + ico32.length;
   
   const dirEntry16 = createDirEntry(16, offset16, ico16.length);
   const dirEntry32 = createDirEntry(32, offset32, ico32.length);
+  const dirEntry48 = createDirEntry(48, offset48, ico48.length);
   
   const icoBuffer = Buffer.concat([
     icoHeader,
     dirEntry16,
     dirEntry32,
+    dirEntry48,
     ico16,
-    ico32
+    ico32,
+    ico48
   ]);
   
   writeFileSync(join(process.cwd(), 'public', 'favicon.ico'), icoBuffer);

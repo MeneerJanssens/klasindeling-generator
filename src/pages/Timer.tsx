@@ -104,15 +104,21 @@ export default function Timer() {
   const isLowTime = percentageLeft <= 10 && percentageLeft > 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full print:hidden">
-          <Clock className="w-10 h-10" />
-          Klastimer
-        </h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-8 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+              <Clock className="w-9 h-9 text-white" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+              Klastimer
+            </h1>
+          </div>
+        </div>
 
         {/* Timer Display */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20">
           {/* Timer Circle */}
           <div 
             className={`relative w-full max-w-sm mx-auto ${isAlarmPlaying ? 'cursor-pointer' : ''}`}
@@ -192,13 +198,13 @@ export default function Timer() {
 
           {/* Preset Buttons - Horizontal Below Control Buttons */}
           <div className="mt-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 text-center">Snelkeuze:</h3>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">Snelkeuze</h2>
             <div className="flex flex-wrap gap-2 justify-center">
               {PRESETS.map((preset) => (
                 <button
                   key={preset.seconds}
                   onClick={() => startTimer(preset.seconds)}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-sm transition shadow hover:shadow-md"
+                  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold text-sm transition shadow-lg"
                 >
                   {preset.label}
                 </button>
@@ -208,32 +214,32 @@ export default function Timer() {
         </div>
 
         {/* Manual Time Input */}
-        <div className="bg-white rounded-lg shadow-lg p-8 print:hidden">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-4 text-center">
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20 print:hidden">
+          <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
             Aangepaste tijd instellen
           </h2>
           <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <div className="flex gap-3 items-center">
               <div className="flex flex-col">
-                <label className="text-xs font-medium text-gray-600 mb-1">Minuten</label>
+                <label className="text-sm font-medium text-gray-700 mb-2">Minuten</label>
                 <input
                   type="number"
                   min="0"
                   max="99"
                   placeholder="0"
-                  className="w-20 px-3 py-2 border-2 border-gray-300 rounded-lg text-center text-lg font-semibold focus:border-indigo-500 focus:outline-none"
+                  className="w-24 px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                   id="custom-minutes"
                 />
               </div>
-              <span className="text-2xl font-bold text-gray-400 mt-5">:</span>
+              <span className="text-3xl font-bold text-gray-400 mt-6">:</span>
               <div className="flex flex-col">
-                <label className="text-xs font-medium text-gray-600 mb-1">Seconden</label>
+                <label className="text-sm font-medium text-gray-700 mb-2">Seconden</label>
                 <input
                   type="number"
                   min="0"
                   max="59"
                   placeholder="0"
-                  className="w-20 px-3 py-2 border-2 border-gray-300 rounded-lg text-center text-lg font-semibold focus:border-indigo-500 focus:outline-none"
+                  className="w-24 px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                   id="custom-seconds"
                 />
               </div>
@@ -251,14 +257,14 @@ export default function Timer() {
                   secondsInput.value = '';
                 }
               }}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition shadow-lg hover:shadow-xl md:mt-5"
+              className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-lg md:mt-6"
             >
               Start Timer
             </button>
           </div>
 
-          <div className="mt-6 p-3 md:p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-xs md:text-sm text-gray-700 text-center">
+          <div className="mt-6 p-4 bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-xl">
+            <p className="text-sm text-gray-700 text-center">
               💡 <strong>Tip:</strong> Perfecte timer voor klasactiviteiten, toetsen, groepswerk en korte pauzes!
             </p>
           </div>
@@ -273,25 +279,27 @@ export default function Timer() {
 
         {/* Donatie sectie */}
         <div className="mt-8">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              Steun dit project
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white border border-indigo-500/20">
+            <h3 className="text-xl font-bold mb-2 text-center">
+              ❤️ Steun dit project
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="mb-6 text-center text-indigo-100">
               Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
             </p>
-            <a 
-              href='https://ko-fi.com/Z8Z01G7O8R' 
-              target='_blank' 
-              rel='noopener noreferrer'
-              className="inline-block"
-            >
-              <img 
-                src='https://ko-fi.com/img/githubbutton_sm.svg' 
-                alt='Steun me op Ko-fi' 
-                className="mx-auto"
-              />
-            </a>
+            <div className="flex justify-center">
+              <a 
+                href='https://ko-fi.com/Z8Z01G7O8R' 
+                target='_blank' 
+                rel='noopener noreferrer'
+                className="inline-block transform hover:scale-105 transition"
+              >
+                <img 
+                  src='/support_me_on_kofi_dark.png' 
+                  alt='Steun me op Ko-fi' 
+                  className="mx-auto h-12"
+                />
+              </a>
+            </div>
           </div>
         </div>
       </div>

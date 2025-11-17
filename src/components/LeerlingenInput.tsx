@@ -10,7 +10,7 @@ interface LeerlingenInputProps {
 export default function LeerlingenInput({ leerlingen, setLeerlingen }: LeerlingenInputProps) {
   const [naam, setNaam] = useState('');
   const [geslacht, setGeslacht] = useState<'m' | 'v'>('m');
-  const [lastig, setLastig] = useState(false);
+  const [druk, setDruk] = useState(false);
   const [vooraan, setVooraan] = useState(false);
   const [bulkTekst, setBulkTekst] = useState('');
   const [toonBulk, setToonBulk] = useState(false);
@@ -22,11 +22,11 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
         id: Date.now(),
         naam: naam.trim(),
         geslacht,
-        lastig,
+        druk,
         vooraan
       }]);
       setNaam('');
-      setLastig(false);
+      setDruk(false);
       setVooraan(false);
     }
   };
@@ -44,7 +44,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
       id: Date.now() + Math.random(),
       naam: regel.trim(),
       geslacht: 'm' as const,
-      lastig: false,
+      druk: false,
       vooraan: false
     }));
     setLeerlingen([...leerlingen, ...nieuweLeerlingen]);
@@ -111,13 +111,15 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
           </div>
           
           <div className="flex-1 md:flex-initial min-w-[200px] md:min-w-0">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="gender-select" className="block text-sm font-medium text-gray-700 mb-1">
               Geslacht
             </label>
             <select
+              id="gender-select"
               value={geslacht}
               onChange={(e) => setGeslacht(e.target.value as 'm' | 'v')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              aria-label="Geslacht selecteren"
             >
               <option value="m">Jongen</option>
               <option value="v">Meisje</option>
@@ -128,13 +130,13 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                id="lastig"
-                checked={lastig}
-                onChange={(e) => setLastig(e.target.checked)}
+                id="druk"
+                checked={druk}
+                onChange={(e) => setDruk(e.target.checked)}
                 className="w-4 h-4 rounded focus:ring-indigo-500 accent-indigo-600"
               />
-              <label htmlFor="lastig" className="text-sm font-medium text-gray-700">
-                Lastig
+              <label htmlFor="druk" className="text-sm font-medium text-gray-700">
+                Druk
               </label>
             </div>
 
@@ -182,7 +184,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
                     className={`px-3 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:shadow-md transition ${
                       leerling.vooraan
                         ? 'bg-green-100 border-2 border-green-400'
-                        : leerling.lastig
+                        : leerling.druk
                         ? 'bg-orange-100 border-2 border-orange-300'
                         : 'bg-gray-100'
                     }`}
@@ -224,11 +226,11 @@ interface BewerkLeerlingFormProps {
 function BewerkLeerlingForm({ leerling, onOpslaan, onAnnuleer }: BewerkLeerlingFormProps) {
   const [naam, setNaam] = useState(leerling.naam);
   const [geslacht, setGeslacht] = useState(leerling.geslacht);
-  const [lastig, setLastig] = useState(leerling.lastig);
+  const [druk, setDruk] = useState(leerling.druk);
   const [vooraan, setVooraan] = useState(leerling.vooraan);
 
   const handleOpslaan = () => {
-    onOpslaan(leerling.id, { naam, geslacht, lastig, vooraan });
+    onOpslaan(leerling.id, { naam, geslacht, druk, vooraan });
   };
 
   return (
@@ -240,11 +242,15 @@ function BewerkLeerlingForm({ leerling, onOpslaan, onAnnuleer }: BewerkLeerlingF
           onChange={(e) => setNaam(e.target.value)}
           className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
           placeholder="Naam"
+          aria-label="Naam van leerling"
         />
+        <label htmlFor="edit-gender-select" className="sr-only">Geslacht selecteren</label>
         <select
+          id="edit-gender-select"
           value={geslacht}
           onChange={(e) => setGeslacht(e.target.value as 'm' | 'v')}
           className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+          aria-label="Geslacht selecteren"
         >
           <option value="m">Jongen ♂️</option>
           <option value="v">Meisje ♀️</option>
@@ -252,11 +258,11 @@ function BewerkLeerlingForm({ leerling, onOpslaan, onAnnuleer }: BewerkLeerlingF
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
-            checked={lastig}
-            onChange={(e) => setLastig(e.target.checked)}
+            checked={druk}
+            onChange={(e) => setDruk(e.target.checked)}
             className="w-4 h-4 rounded accent-indigo-600"
           />
-          Lastige leerling
+          Drukke leerling
         </label>
         <label className="flex items-center gap-2 text-sm">
           <input

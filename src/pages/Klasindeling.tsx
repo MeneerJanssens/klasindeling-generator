@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Armchair, Grid3x3, Shuffle, Printer, X, Download } from 'lucide-react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { Leerling, OpgeslagenKlas } from '../utils/klasStorage';
 import LeerlingenInput from '../components/LeerlingenInput';
 import KlasOpslaan from '../components/KlasOpslaan';
@@ -12,7 +10,7 @@ interface DraggedItem {
   kolomIndex: number;
 }
 
-export default function KlasindelingApp() {
+export default function Klasindeling() {
   const [leerlingen, setLeerlingen] = useState<Leerling[]>([]);
   const [rijen, setRijen] = useState<number>(4);
   const [kolommen, setKolommen] = useState<number>(6);
@@ -54,10 +52,10 @@ export default function KlasindelingApp() {
       return;
     }
 
-    // Verdeel leerlingen: vooraan, lastige en normale
+    // Verdeel leerlingen: vooraan, drukke en normale
     const vooraanLeerlingen = [...leerlingen.filter(l => l.vooraan)].sort(() => Math.random() - 0.5);
-    const lastigeLeerlingen = [...leerlingen.filter(l => l.lastig && !l.vooraan)].sort(() => Math.random() - 0.5);
-    const normaleLeerlingen = [...leerlingen.filter(l => !l.lastig && !l.vooraan)].sort(() => Math.random() - 0.5);
+    const drukkeLeerlingen = [...leerlingen.filter(l => l.druk && !l.vooraan)].sort(() => Math.random() - 0.5);
+    const normaleLeerlingen = [...leerlingen.filter(l => !l.druk && !l.vooraan)].sort(() => Math.random() - 0.5);
     
     // Maak een lege grid
     const nieuweIndeling: (Leerling | null)[][] = [];
@@ -70,40 +68,40 @@ export default function KlasindelingApp() {
       nieuweIndeling.push(rij);
     }
 
-    // Helper functie: check of een positie naast een lastige leerling is
-    const heeftLastigeBuur = (r: number, k: number): boolean => {
+    // Helper functie: check of een positie naast een drukke leerling is
+    const heeftDrukkeBuur = (r: number, k: number): boolean => {
       // Check links
-      if (k > 0 && nieuweIndeling[r][k - 1]?.lastig) return true;
+      if (k > 0 && nieuweIndeling[r][k - 1]?.druk) return true;
       // Check rechts
-      if (k < kolommen - 1 && nieuweIndeling[r][k + 1]?.lastig) return true;
+      if (k < kolommen - 1 && nieuweIndeling[r][k + 1]?.druk) return true;
       // Check boven
-      if (r > 0 && nieuweIndeling[r - 1][k]?.lastig) return true;
+      if (r > 0 && nieuweIndeling[r - 1][k]?.druk) return true;
       // Check onder
-      if (r < rijen - 1 && nieuweIndeling[r + 1][k]?.lastig) return true;
+      if (r < rijen - 1 && nieuweIndeling[r + 1][k]?.druk) return true;
       return false;
     };
 
-    // Plaats eerst lastige leerlingen
-    let lastigeIndex = 0;
+    // Plaats eerst drukke leerlingen
+    let drukkeIndex = 0;
     let maxPogingen = 1000;
     let pogingen = 0;
     
-    while (lastigeIndex < lastigeLeerlingen.length && pogingen < maxPogingen) {
+    while (drukkeIndex < drukkeLeerlingen.length && pogingen < maxPogingen) {
       pogingen++;
       const r = Math.floor(Math.random() * rijen);
       const k = Math.floor(Math.random() * kolommen);
       
-      // Check of de positie beschikbaar is en geen lastige buren heeft
-      if (nieuweIndeling[r][k] === undefined && !heeftLastigeBuur(r, k)) {
-        nieuweIndeling[r][k] = lastigeLeerlingen[lastigeIndex];
-        lastigeIndex++;
+      // Check of de positie beschikbaar is en geen drukke buren heeft
+      if (nieuweIndeling[r][k] === undefined && !heeftDrukkeBuur(r, k)) {
+        nieuweIndeling[r][k] = drukkeLeerlingen[drukkeIndex];
+        drukkeIndex++;
         pogingen = 0; // Reset pogingen na succesvolle plaatsing
       }
     }
 
-    // Als niet alle lastige leerlingen geplaatst konden worden, waarschuw dan
-    if (lastigeIndex < lastigeLeerlingen.length) {
-      alert('Waarschuwing: Niet alle lastige leerlingen kunnen worden verspreid zonder naast elkaar te zitten. Probeer opnieuw of pas de klasindeling aan.');
+    // Als niet alle drukke leerlingen geplaatst konden worden, waarschuw dan
+    if (drukkeIndex < drukkeLeerlingen.length) {
+      alert('Waarschuwing: Niet alle drukke leerlingen kunnen worden verspreid zonder naast elkaar te zitten. Probeer opnieuw of pas de klasindeling aan.');
     }
 
     // Plaats eerst vooraan-leerlingen willekeurig over de onderste rij
@@ -231,6 +229,12 @@ export default function KlasindelingApp() {
     if (!element) return;
 
     try {
+      // Dynamically import PDF libraries only when needed
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import('jspdf'),
+        import('html2canvas')
+      ]);
+
       // Add a class to force desktop styles
       element.classList.add('pdf-export');
       
@@ -301,13 +305,19 @@ export default function KlasindelingApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8 print:bg-white print:p-0">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8 print:bg-white print:p-0">
       <div className="max-w-6xl mx-auto print:max-w-none">
         <div className="print:hidden">
-          <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
-            <Armchair className="w-10 h-10" />
-            Klasindeling
-          </h1>
+          <div className="mb-8 text-center">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+                <Armchair className="w-9 h-9 text-white" />
+              </div>
+              <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+                Klasindeling
+              </h1>
+            </div>
+          </div>
 
           {/* Opgeslagen klassen sectie */}
           <div className="mb-6">
@@ -337,16 +347,21 @@ export default function KlasindelingApp() {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="rijen-range" className="block text-sm font-medium text-gray-700 mb-2">
                     Aantal rijen: {rijen}
                   </label>
                   <input
                     type="range"
+                    id="rijen-range"
                     min="1"
                     max="8"
                     value={rijen}
                     onChange={(e) => setRijen(parseInt(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    aria-label="Aantal rijen aanpassen"
+                    aria-valuemin={1}
+                    aria-valuemax={8}
+                    aria-valuenow={rijen}
                     style={{
                       background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${((rijen - 1) / 7) * 100}%, #e5e7eb ${((rijen - 1) / 7) * 100}%, #e5e7eb 100%)`
                     }}
@@ -354,16 +369,21 @@ export default function KlasindelingApp() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="kolommen-range" className="block text-sm font-medium text-gray-700 mb-2">
                     Aantal kolommen: {kolommen}
                   </label>
                   <input
                     type="range"
+                    id="kolommen-range"
                     min="1"
                     max="10"
                     value={kolommen}
                     onChange={(e) => setKolommen(parseInt(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    aria-label="Aantal kolommen aanpassen"
+                    aria-valuemin={1}
+                    aria-valuemax={10}
+                    aria-valuenow={kolommen}
                     style={{
                       background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${((kolommen - 1) / 9) * 100}%, #e5e7eb ${((kolommen - 1) / 9) * 100}%, #e5e7eb 100%)`
                     }}
@@ -488,7 +508,7 @@ export default function KlasindelingApp() {
                     {rij.map((leerling, kolomIndex) => {
                       const positieKey = `${rijIndex}-${kolomIndex}`;
                       const isGeblokkeerd = geblokkeerd.has(positieKey);
-                      const isLastig = leerling?.lastig || false;
+                      const isDruk = leerling?.druk || false;
                       const isVooraan = leerling?.vooraan || false;
                       return (
                         <div
@@ -503,7 +523,7 @@ export default function KlasindelingApp() {
                               : leerling
                               ? isVooraan
                                 ? 'bg-green-100 border-green-400 cursor-move hover:bg-green-200 print:cursor-default print:bg-white print:border-gray-700'
-                                : isLastig
+                                : isDruk
                                 ? 'bg-orange-100 border-orange-300 cursor-move hover:bg-orange-200 print:cursor-default print:bg-white print:border-gray-700'
                                 : 'bg-indigo-50 border-indigo-300 cursor-move hover:bg-indigo-100 print:cursor-default print:bg-white print:border-gray-700'
                               : 'bg-gray-50 border-gray-200 print:bg-white print:border-gray-400'
@@ -518,7 +538,7 @@ export default function KlasindelingApp() {
                               <span className="text-xs mt-1 print:hidden">
                                 {leerling.geslacht === 'm' ? '♂️' : '♀️'}
                                 {isVooraan && ' ⭐'}
-                                {isLastig && ' ⚠️'}
+                                {isDruk && ' ⚠️'}
                               </span>
                             </>
                           ) : !isGeblokkeerd ? (
@@ -543,27 +563,29 @@ export default function KlasindelingApp() {
 
       {/* Donatie sectie - onderaan (alleen zichtbaar als klasindeling getoond wordt) */}
       {toonResultaat && (
-        <div className="mt-8 text-center print:hidden">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Steun dit project
-          </h3>
-          <p className="text-gray-600 mb-4">
-            Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
-          </p>
-          <a 
-            href='https://ko-fi.com/Z8Z01G7O8R' 
-            target='_blank' 
-            rel='noopener noreferrer'
-            className="inline-block"
-          >
-            <img 
-              src='https://ko-fi.com/img/githubbutton_sm.svg' 
-              alt='Steun me op Ko-fi' 
-              className="mx-auto"
-            />
-          </a>
-        </div>
+        <div className="mt-8 max-w-6xl mx-auto print:hidden">
+          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white border border-indigo-500/20">
+            <h2 className="text-xl font-bold mb-2 text-center">
+              ❤️ Steun dit project
+            </h2>
+            <p className="mb-6 text-center text-indigo-100">
+              Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
+            </p>
+            <div className="flex justify-center">
+              <a 
+                href='https://ko-fi.com/Z8Z01G7O8R' 
+                target='_blank' 
+                rel='noopener noreferrer'
+                className="inline-block transform hover:scale-105 transition"
+              >
+                <img 
+                  src='/support_me_on_kofi_dark.png' 
+                  alt='Steun me op Ko-fi' 
+                  className="mx-auto h-12"
+                />
+              </a>
+            </div>
+          </div>
       </div>
       )}
 

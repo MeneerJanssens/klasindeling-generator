@@ -4,7 +4,7 @@ export interface Leerling {
   id: number;
   naam: string;
   geslacht: 'm' | 'v';
-  lastig: boolean;
+  druk: boolean;
   vooraan: boolean;
 }
 

@@ -34,18 +34,21 @@ interface InputControlProps {
   unit: string;
   value: number;
   onChange: (value: number) => void;
+  id: string;
 }
 
-const InputControl = ({ label, unit, value, onChange }: InputControlProps) => (
+const InputControl = ({ label, unit, value, onChange, id }: InputControlProps) => (
   <div className="flex flex-col p-2 bg-indigo-50 rounded-lg shadow-sm border border-indigo-200">
-    <label className="text-xs font-semibold text-indigo-900 mb-1">{label}</label>
+    <label htmlFor={id} className="text-xs font-semibold text-indigo-900 mb-1">{label}</label>
     <div className="flex items-center">
       <input
         type="number"
+        id={id}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
         className="w-full p-2 text-sm border border-indigo-300 rounded-l-md focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-900"
         step="0.1"
+        aria-label={label}
       />
       <span className="p-2 text-sm bg-indigo-200 rounded-r-md font-medium text-indigo-900">{unit}</span>
     </div>
@@ -168,12 +171,18 @@ export default function EVRBSimulator() {
   const currentValues = useMemo(() => ({ x0, v0, a, t0 }), [x0, v0, a, t0]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
-          <Car className="w-10 h-10" />
-          EVRB Simulator
-        </h1>
+        <div className="mb-8 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+              <Car className="w-9 h-9 text-white" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+              EVRB Simulator
+            </h1>
+          </div>
+        </div>
 
         {/* 1. CONTROLS PANEEL */}
         <div className="mb-8 p-8 bg-white rounded-lg shadow-lg">
@@ -184,6 +193,7 @@ export default function EVRBSimulator() {
           {motionFields.map(field => (
             <InputControl
               key={field.id}
+              id={field.id}
               label={field.label}
               unit={field.unit}
               value={currentValues[field.id as keyof typeof currentValues]}
@@ -339,26 +349,28 @@ export default function EVRBSimulator() {
       </div>
 
       {/* Donatie sectie - onderaan */}
-      <div className="mt-8 text-center">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
-            Steun dit project
-          </h3>
-          <p className="text-gray-600 mb-4">
+      <div className="mt-8">
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white border border-indigo-500/20">
+          <h2 className="text-xl font-bold mb-2 text-center">
+            ❤️ Steun dit project
+          </h2>
+          <p className="mb-6 text-center text-indigo-100">
             Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
           </p>
-          <a 
-            href='https://ko-fi.com/Z8Z01G7O8R' 
-            target='_blank' 
-            rel='noopener noreferrer'
-            className="inline-block"
-          >
-            <img 
-              src='https://ko-fi.com/img/githubbutton_sm.svg' 
-              alt='Steun me op Ko-fi' 
-              className="mx-auto"
-            />
-          </a>
+          <div className="flex justify-center">
+            <a 
+              href='https://ko-fi.com/Z8Z01G7O8R' 
+              target='_blank' 
+              rel='noopener noreferrer'
+              className="inline-block transform hover:scale-105 transition"
+            >
+              <img 
+                src='/support_me_on_kofi_dark.png' 
+                alt='Steun me op Ko-fi' 
+                className="mx-auto h-12"
+              />
+            </a>
+          </div>
         </div>
       </div>
       </div>

@@ -2,12 +2,18 @@ import { Mail, Github, MessageSquare } from 'lucide-react';
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
-          <Mail className="w-10 h-10" />
-          Contact
-        </h1>
+        <div className="mb-8 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+              <Mail className="w-9 h-9 text-white" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+              Contact
+            </h1>
+          </div>
+        </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
           
@@ -21,7 +27,7 @@ export default function Contact() {
               <div className="bg-indigo-50 p-6 rounded-lg">
                 <div className="flex items-center gap-3 mb-3">
                   <Mail className="w-6 h-6 text-indigo-600" />
-                  <h3 className="text-xl font-semibold text-indigo-900">Contactformulier</h3>
+                  <h2 className="text-xl font-semibold text-indigo-900">Contactformulier</h2>
                 </div>
                 <p className="text-gray-700 mb-3">
                   Vul het contactformulier in met je vraag of feedback.
@@ -40,7 +46,7 @@ export default function Contact() {
               <div className="bg-indigo-50 p-6 rounded-lg">
                 <div className="flex items-center gap-3 mb-3">
                   <Github className="w-6 h-6 text-indigo-600" />
-                  <h3 className="text-xl font-semibold text-indigo-900">GitHub</h3>
+                  <h2 className="text-xl font-semibold text-indigo-900">GitHub</h2>
                 </div>
                 <p className="text-gray-700 mb-3">
                   Bekijk de broncode of meld een bug.
@@ -59,7 +65,7 @@ export default function Contact() {
               <div className="bg-indigo-50 p-6 rounded-lg md:col-span-2">
                 <div className="flex items-center gap-3 mb-3">
                   <MessageSquare className="w-6 h-6 text-indigo-600" />
-                  <h3 className="text-xl font-semibold text-indigo-900">Feedback</h3>
+                  <h2 className="text-xl font-semibold text-indigo-900">Feedback</h2>
                 </div>
                 <p className="text-gray-700">
                   Je feedback helpt me om deze tool te verbeteren. Laat me weten wat 
@@ -81,10 +87,12 @@ export default function Contact() {
                 href='https://ko-fi.com/Z8Z01G7O8R' 
                 target='_blank' 
                 rel='noopener noreferrer'
+                className="inline-block transform hover:scale-105 transition"
               >
                 <img 
-                  src='https://ko-fi.com/img/githubbutton_sm.svg' 
+                  src='/support_me_on_kofi_dark.png' 
                   alt='Support me on Ko-fi' 
+                  className="h-12"
                 />
               </a>
             </div>

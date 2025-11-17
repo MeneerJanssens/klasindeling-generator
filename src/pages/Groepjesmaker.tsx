@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { Users, RefreshCw, Edit2, Save, Printer, Download } from 'lucide-react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { Leerling, OpgeslagenKlas } from '../utils/klasStorage';
 import LeerlingenInput from '../components/LeerlingenInput';
 import KlasOpslaan from '../components/KlasOpslaan';
@@ -28,8 +26,8 @@ export default function Groepjesmaker() {
 
     const geshuffled = [...leerlingen].sort(() => Math.random() - 0.5);
     
-    const lastigeLeerlingen = geshuffled.filter(l => l.lastig);
-    const normaleLeerlingen = geshuffled.filter(l => !l.lastig);
+    const drukkeLeerlingen = geshuffled.filter(l => l.druk);
+    const normaleLeerlingen = geshuffled.filter(l => !l.druk);
     
     let nieuweGroepen: Leerling[][] = [];
     let aantalGr;
@@ -44,8 +42,8 @@ export default function Groepjesmaker() {
       nieuweGroepen.push([]);
     }
 
-    // Eerst lastige leerlingen verdelen (één per groep zoveel mogelijk)
-    lastigeLeerlingen.forEach((leerling, idx) => {
+    // Eerst drukke leerlingen verdelen (één per groep zoveel mogelijk)
+    drukkeLeerlingen.forEach((leerling, idx) => {
       nieuweGroepen[idx % aantalGr].push(leerling);
     });
 
@@ -178,6 +176,12 @@ export default function Groepjesmaker() {
     if (!element) return;
 
     try {
+      // Dynamically import PDF libraries only when needed
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import('jspdf'),
+        import('html2canvas')
+      ]);
+
       // Add a class to force desktop styles
       element.classList.add('pdf-export');
       
@@ -248,12 +252,18 @@ export default function Groepjesmaker() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
-          <Users className="w-10 h-10" />
-          Groepjesmaker
-        </h1>
+        <div className="mb-8 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+              <Users className="w-9 h-9 text-white" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+              Groepjesmaker
+            </h1>
+          </div>
+        </div>
 
         {/* Opgeslagen klassen sectie */}
         <div className="mb-6">
@@ -272,7 +282,7 @@ export default function Groepjesmaker() {
         {/* Groepsinstellingen */}
         {leerlingen.length > 0 && (
           <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-            <h3 className="font-semibold text-gray-700 mb-4">Groepsindeling</h3>
+            <h2 className="font-semibold text-gray-700 mb-4">Groepsindeling</h2>
               
               <div className="flex gap-4 mb-4 flex-wrap">
                 <label className="flex items-center gap-2">
@@ -459,26 +469,28 @@ export default function Groepjesmaker() {
 
         {/* Donatie sectie - onderaan (alleen zichtbaar als groepen gemaakt zijn) */}
         {groepen.length > 0 && (
-          <div className="mt-8 text-center">
-            <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Steun dit project
-              </h3>
-              <p className="text-gray-600 mb-4">
+          <div className="mt-8">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white border border-indigo-500/20">
+              <h2 className="text-xl font-bold mb-2 text-center">
+                ❤️ Steun dit project
+              </h2>
+              <p className="mb-6 text-center text-indigo-100">
                 Vind je deze tool handig? Help me om meer gratis tools te maken voor leerkrachten!
               </p>
-              <a 
-                href='https://ko-fi.com/Z8Z01G7O8R' 
-                target='_blank' 
-                rel='noopener noreferrer'
-                className="inline-block"
-              >
-                <img 
-                  src='https://ko-fi.com/img/githubbutton_sm.svg' 
-                  alt='Steun me op Ko-fi' 
-                  className="mx-auto"
-                />
-              </a>
+              <div className="flex justify-center">
+                <a 
+                  href='https://ko-fi.com/Z8Z01G7O8R' 
+                  target='_blank' 
+                  rel='noopener noreferrer'
+                  className="inline-block transform hover:scale-105 transition"
+                >
+                  <img 
+                    src='/support_me_on_kofi_dark.png' 
+                    alt='Steun me op Ko-fi' 
+                    className="mx-auto h-12"
+                  />
+                </a>
+              </div>
             </div>
           </div>
         )}
@@ -502,7 +514,7 @@ function LeerlingKaart({ leerling, bewerkMode, onVerplaats, groepen, huidigeGroe
     <div className="relative">
       <div
         className={`px-3 py-2 rounded-lg ${
-          leerling.lastig
+          leerling.druk
             ? 'bg-orange-100 border-2 border-orange-300'
             : 'bg-white border-2 border-gray-200'
         } ${bewerkMode ? 'cursor-pointer hover:shadow-md transition' : ''}`}
@@ -515,7 +527,7 @@ function LeerlingKaart({ leerling, bewerkMode, onVerplaats, groepen, huidigeGroe
               {leerling.geslacht === 'm' ? '♂️' : leerling.geslacht === 'v' ? '♀️' : '⚧️'}
             </span>
           </span>
-          {leerling.lastig && (
+          {leerling.druk && (
             <span className="text-xs bg-orange-200 px-2 py-1 rounded">⚠️</span>
           )}
         </div>

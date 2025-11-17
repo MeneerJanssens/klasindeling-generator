@@ -1,6 +1,13 @@
 {
-  "name": "Klasindeling",
+  "name": "Klasindeling - Slimme tools voor leerkrachten",
   "short_name": "Klasindeling",
+  "description": "Klasindeling tool voor het maken van slimme klasindelingen, groepjes, naamkiezers en meer.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5850ec",
+  "orientation": "any",
   "icons": [
     {
       "src": "/favicons/favicon-16x16.png",
@@ -20,7 +27,8 @@
     {
       "src": "/favicons/apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/favicons/icon-192x192.png",
@@ -35,7 +43,17 @@
       "purpose": "any maskable"
     }
   ],
-  "theme_color": "#5850ec",
-  "background_color": "#5850ec",
-  "display": "standalone"
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Klasindeling",
+      "url": "/",
+      "description": "Maak een nieuwe klasindeling"
+    },
+    {
+      "name": "Groepjesmaker",
+      "url": "/groepjesmaker",
+      "description": "Maak groepjes"
+    }
+  ]
 }

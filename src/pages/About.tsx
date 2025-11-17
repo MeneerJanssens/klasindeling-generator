@@ -2,12 +2,18 @@ import { Info } from 'lucide-react';
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-indigo-900 mb-8 text-center flex items-center justify-center gap-3 w-full">
-          <Info className="w-10 h-10" />
-          Over
-        </h1>
+        <div className="mb-8 text-center">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-2">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
+              <Info className="w-9 h-9 text-white" />
+            </div>
+            <h1 className="text-4xl sm:text-5xl font-extrabold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
+              Over
+            </h1>
+          </div>
+        </div>
 
         <div className="bg-white rounded-lg shadow-lg p-8">
           
@@ -27,7 +33,7 @@ export default function About() {
                   📐 Klasindeling
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Genereer willekeurige zitindelingen, blokkeer plaatsen, voorkom dat lastige 
+                  Genereer willekeurige zitindelingen, blokkeer plaatsen, voorkom dat drukke 
                   leerlingen naast elkaar zitten, en print of download als PDF.
                 </p>
               </div>
@@ -59,6 +65,16 @@ export default function About() {
                 <p className="text-sm text-gray-600">
                   Eenvoudige klaslokaal timer met vooringestelde tijden en aangepaste intervallen. 
                   Ideaal voor toetsen, groepswerk en activiteiten.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold text-indigo-700 mb-2">
+                  📱 QR-Code Generator
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Genereer QR-codes van elke URL met instelbare grootte en download als PNG. 
+                  Perfect voor het maken van educatief materiaal.
                 </p>
               </div>
 
@@ -104,11 +120,12 @@ export default function About() {
                 href='https://ko-fi.com/Z8Z01G7O8R' 
                 target='_blank' 
                 rel='noopener noreferrer'
+                className="inline-block transform hover:scale-105 transition"
               >
                 <img 
-                  src='https://ko-fi.com/img/githubbutton_sm.svg' 
+                  src='/support_me_on_kofi_dark.png' 
                   alt='Steun me op Ko-fi'
-                  className="hover:opacity-80 transition-opacity"
+                  className="h-12"
                 />
               </a>
             </div>
