@@ -41,15 +41,19 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Core React libs
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+          // Core React libs - keep together with recharts dependencies
+          if (id.includes('node_modules/react') || 
+              id.includes('node_modules/react-dom') ||
+              id.includes('node_modules/react-router') ||
+              id.includes('node_modules/scheduler')) {
             return 'react-vendor';
           }
-          if (id.includes('node_modules/react-router')) {
-            return 'react-vendor';
-          }
-          // Chart library
-          if (id.includes('node_modules/recharts')) {
+          // Chart library with its dependencies
+          if (id.includes('node_modules/recharts') ||
+              id.includes('node_modules/d3-') ||
+              id.includes('node_modules/@reduxjs/toolkit') ||
+              id.includes('node_modules/react-redux') ||
+              id.includes('node_modules/use-sync-external-store')) {
             return 'chart-vendor';
           }
           // PDF libraries (already lazy loaded)
