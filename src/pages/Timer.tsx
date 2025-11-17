@@ -118,7 +118,7 @@ export default function Timer() {
         </div>
 
         {/* Timer Display */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20">
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
           {/* Timer Circle */}
           <div 
             className={`relative w-full max-w-sm mx-auto ${isAlarmPlaying ? 'cursor-pointer' : ''}`}
@@ -204,7 +204,7 @@ export default function Timer() {
                 <button
                   key={preset.seconds}
                   onClick={() => startTimer(preset.seconds)}
-                  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold text-sm transition shadow-lg"
+                  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold text-sm transition shadow-lg"
                 >
                   {preset.label}
                 </button>
@@ -214,7 +214,7 @@ export default function Timer() {
         </div>
 
         {/* Manual Time Input */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20 print:hidden">
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6 print:hidden">
           <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
             Aangepaste tijd instellen
           </h2>
@@ -227,7 +227,7 @@ export default function Timer() {
                   min="0"
                   max="99"
                   placeholder="0"
-                  className="w-24 px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                  className="w-24 px-4 py-3 border-2 border-gray-300 rounded-2xl text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                   id="custom-minutes"
                 />
               </div>
@@ -239,7 +239,7 @@ export default function Timer() {
                   min="0"
                   max="59"
                   placeholder="0"
-                  className="w-24 px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                  className="w-24 px-4 py-3 border-2 border-gray-300 rounded-2xl text-center text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
                   id="custom-seconds"
                 />
               </div>
@@ -257,7 +257,7 @@ export default function Timer() {
                   secondsInput.value = '';
                 }
               }}
-              className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-lg md:mt-6"
+              className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold transition shadow-lg md:mt-6"
             >
               Start Timer
             </button>

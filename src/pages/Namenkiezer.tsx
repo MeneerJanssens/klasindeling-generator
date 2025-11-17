@@ -57,7 +57,7 @@ export default function Namenkiezer() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-blue-100 p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-4xl mx-auto">
       <div className="mb-8 text-center">
         <div className="flex flex-col items-center justify-center gap-4 mb-2">
             <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
@@ -70,7 +70,7 @@ export default function Namenkiezer() {
         </div>
 
         {/* Klas Selectie */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Selecteer een klas
           </h2>
@@ -84,7 +84,7 @@ export default function Namenkiezer() {
                 <button
                   key={klas.naam}
                   onClick={() => handleKlasSelectie(klas.naam)}
-                  className={`px-4 py-3 rounded-lg font-medium transition shadow hover:shadow-md ${
+                  className={`px-4 py-3 rounded-2xl font-medium transition shadow hover:shadow-md ${
                     geselecteerdeKlas === klas.naam
                       ? 'bg-indigo-600 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -101,7 +101,7 @@ export default function Namenkiezer() {
         </div>
 
         {/* Leerlingen toevoegen */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
             Leerlingen beheren
           </h2>
@@ -112,11 +112,11 @@ export default function Namenkiezer() {
               onChange={(e) => setNieuweLeerling(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && voegLeerlingToe()}
               placeholder="Voeg een naam toe..."
-              className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+              className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none"
             />
             <button
               onClick={voegLeerlingToe}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition flex items-center gap-2 justify-center sm:justify-start whitespace-nowrap"
+              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-2xl font-medium transition flex items-center gap-2 justify-center sm:justify-start whitespace-nowrap"
             >
               <Plus className="w-5 h-5" />
               Toevoegen
@@ -124,12 +124,12 @@ export default function Namenkiezer() {
           </div>
 
           {leerlingen.length > 0 && (
-            <div className="border-2 border-gray-200 rounded-lg p-4 max-h-60 overflow-y-auto">
+            <div className="border-2 border-gray-200 rounded-2xl p-4 max-h-60 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {leerlingen.map((naam, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg"
+                    className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-2xl"
                   >
                     <span className="text-gray-800">{naam}</span>
                     <button
@@ -147,7 +147,7 @@ export default function Namenkiezer() {
 
         {/* Naam Kiezer */}
         {leerlingen.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
             <div className="text-center">
               <button
                 onClick={kiesWillekeurigeNaam}

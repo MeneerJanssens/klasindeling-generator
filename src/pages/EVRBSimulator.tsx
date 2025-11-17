@@ -38,7 +38,7 @@ interface InputControlProps {
 }
 
 const InputControl = ({ label, unit, value, onChange, id }: InputControlProps) => (
-  <div className="flex flex-col p-2 bg-indigo-50 rounded-lg shadow-sm border border-indigo-200">
+  <div className="flex flex-col p-2 bg-indigo-50 rounded-2xl shadow-sm border border-indigo-200">
     <label htmlFor={id} className="text-xs font-semibold text-indigo-900 mb-1">{label}</label>
     <div className="flex items-center">
       <input
@@ -185,7 +185,7 @@ export default function EVRBSimulator() {
         </div>
 
         {/* 1. CONTROLS PANEEL */}
-        <div className="mb-8 p-8 bg-white rounded-lg shadow-lg">
+        <div className="mb-8 p-8 bg-white rounded-2xl shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-indigo-900 border-b border-indigo-200 pb-2">
           Bewegingsparameters
         </h2>
@@ -231,7 +231,7 @@ export default function EVRBSimulator() {
       </div>
 
       {/* 2. AUTO ANIMATIE */}
-      <div className="mb-8 p-8 bg-white rounded-lg shadow-lg">
+      <div className="mb-8 p-8 bg-white rounded-2xl shadow-lg">
         <h2 className="text-xl font-bold mb-4 text-indigo-900">
           Simulatie ({time.toFixed(2)}s / {maxDuration}s)
         </h2>
@@ -244,10 +244,10 @@ export default function EVRBSimulator() {
         </div>
 
         {/* De Baan */}
-        <div className="relative w-full h-20 bg-gray-300 rounded-lg overflow-hidden">
+        <div className="relative w-full h-20 bg-gray-300 rounded-2xl overflow-hidden">
           {/* De Auto */}
           <div
-            className="absolute h-8 w-12 bg-red-600 rounded-lg shadow-xl flex items-center justify-center"
+            className="absolute h-8 w-12 bg-red-600 rounded-2xl shadow-xl flex items-center justify-center"
             style={{ 
               bottom: '20px', // Boven de streep
               left: `${clampedCarPosition}%`, // Dynamische positie
@@ -286,7 +286,7 @@ export default function EVRBSimulator() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
         {/* Positie vs Tijd Grafiek */}
-        <div className="p-8 bg-white rounded-lg shadow-lg">
+        <div className="p-8 bg-white rounded-2xl shadow-lg">
           <h2 className="text-xl font-bold mb-4 text-indigo-900">
             Positie - Tijd Grafiek: x(t)
           </h2>
@@ -317,7 +317,7 @@ export default function EVRBSimulator() {
         </div>
 
         {/* Snelheid vs Tijd Grafiek */}
-        <div className="p-8 bg-white rounded-lg shadow-lg">
+        <div className="p-8 bg-white rounded-2xl shadow-lg">
           <h2 className="text-xl font-bold mb-4 text-indigo-900">
             Snelheid - Tijd Grafiek: v(t)
           </h2>

@@ -15,11 +15,11 @@ export default function About() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-8">
           
           <div className="prose prose-lg">
             <p className="text-gray-700 mb-6">
-              Welkom bij Klasindeling.be - een verzameling handige tools voor leraren om klasbeheer 
+              Welkom bij klasindeling.be - een verzameling handige tools voor leraren om klasbeheer 
               en fysica-onderwijs eenvoudiger en interactiever te maken.
             </p>
 
@@ -130,7 +130,7 @@ export default function About() {
               </a>
             </div>
 
-            <div className="mt-8 p-4 bg-indigo-50 rounded-lg">
+            <div className="mt-8 p-4 bg-indigo-50 rounded-2xl">
               <p className="text-sm text-indigo-800">
                 💡 <strong>Tip:</strong> Heb je suggesties voor nieuwe functies of tools? 
                 Neem contact op via de contact pagina!

@@ -15,7 +15,7 @@ export default function Contact() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white rounded-2xl shadow-lg p-8">
           
           <div className="space-y-6">
             <p className="text-gray-700">
@@ -24,7 +24,7 @@ export default function Contact() {
 
             <div className="grid md:grid-cols-2 gap-6 mt-8">
               {/* Email */}
-              <div className="bg-indigo-50 p-6 rounded-lg">
+              <div className="bg-indigo-50 p-6 rounded-2xl">
                 <div className="flex items-center gap-3 mb-3">
                   <Mail className="w-6 h-6 text-indigo-600" />
                   <h2 className="text-xl font-semibold text-indigo-900">Contactformulier</h2>
@@ -43,7 +43,7 @@ export default function Contact() {
               </div>
 
               {/* GitHub */}
-              <div className="bg-indigo-50 p-6 rounded-lg">
+              <div className="bg-indigo-50 p-6 rounded-2xl">
                 <div className="flex items-center gap-3 mb-3">
                   <Github className="w-6 h-6 text-indigo-600" />
                   <h2 className="text-xl font-semibold text-indigo-900">GitHub</h2>
@@ -62,7 +62,7 @@ export default function Contact() {
               </div>
 
               {/* Feedback */}
-              <div className="bg-indigo-50 p-6 rounded-lg md:col-span-2">
+              <div className="bg-indigo-50 p-6 rounded-2xl md:col-span-2">
                 <div className="flex items-center gap-3 mb-3">
                   <MessageSquare className="w-6 h-6 text-indigo-600" />
                   <h2 className="text-xl font-semibold text-indigo-900">Feedback</h2>
@@ -75,7 +75,7 @@ export default function Contact() {
             </div>
 
             {/* Ko-fi Support */}
-            <div className="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="mt-8 p-6 bg-yellow-50 border border-yellow-200 rounded-2xl">
               <h3 className="text-xl font-semibold text-gray-800 mb-3">
                 Steun dit project
               </h3>

@@ -27,6 +27,7 @@ export default function Sidebar({ currentPage }: SidebarProps) {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 bg-indigo-600 text-white p-2 rounded-lg shadow-lg hover:bg-indigo-700 transition print:hidden"
+        aria-label={isOpen ? 'Sluit menu' : 'Open menu'}
       >
         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
@@ -49,8 +50,9 @@ export default function Sidebar({ currentPage }: SidebarProps) {
         `}
       >
         <div className="p-6 pt-16 lg:pt-6">
-          <h2 className="text-2xl font-bold text-indigo-900 mb-8">
-            Klasindeling.be
+          <h2 className="text-2xl font-bold text-indigo-900 mb-8 flex items-center gap-2">
+            <img src="/favicons/favicon-96x96.png" alt="Klasindeling favicon" className="w-8 h-8 mr-1 rounded" />
+            klasindeling.be
           </h2>
 
           <nav className="space-y-2">

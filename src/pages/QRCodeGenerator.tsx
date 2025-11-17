@@ -36,7 +36,7 @@ export default function QRCodeGenerator() {
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20">
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
           <div className="mb-6">
             <label htmlFor="url" className="block text-xl font-semibold text-gray-700 mb-3">
               URL
@@ -47,7 +47,7 @@ export default function QRCodeGenerator() {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://klasindeling.be"
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg transition"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-lg transition"
             />
           </div>
 
@@ -63,7 +63,7 @@ export default function QRCodeGenerator() {
               step="64"
               value={qrSize}
               onChange={(e) => setQrSize(Number(e.target.value))}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+              className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer accent-indigo-600"
               style={{
                 background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${((qrSize - 128) / (512 - 128)) * 100}%, #e5e7eb ${((qrSize - 128) / (512 - 128)) * 100}%, #e5e7eb 100%)`
               }}
@@ -76,14 +76,14 @@ export default function QRCodeGenerator() {
         </div>
 
         {url && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 mb-6 border border-white/20">
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-6 text-center">
               Jouw QR-Code
             </h2>
             <div className="flex flex-col items-center gap-6">
               <div
                 ref={qrRef}
-                className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-4 border-indigo-200 rounded-xl shadow-inner"
+                className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-4 border-indigo-200 rounded-2xl shadow-inner"
               >
                 <QRCodeCanvas
                   value={url}
@@ -95,7 +95,7 @@ export default function QRCodeGenerator() {
 
               <button
                 onClick={downloadQRCode}
-                className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105 font-semibold shadow-lg"
+                className="flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105 font-semibold shadow-lg"
               >
                 <Download className="w-5 h-5" />
                 Download als PNG
@@ -109,7 +109,7 @@ export default function QRCodeGenerator() {
         )}
 
         {!url && (
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-12 border border-white/20">
+          <div className="bg-white rounded-2xl shadow-lg p-12">
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full mb-6">
                 <QrCode className="w-12 h-12 text-indigo-600" />

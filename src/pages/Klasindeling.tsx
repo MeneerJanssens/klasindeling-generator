@@ -339,7 +339,7 @@ export default function Klasindeling() {
             />
 
             {/* Klas layout */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <Grid3x3 className="w-5 h-5" />
                 Klasindeling
@@ -357,7 +357,7 @@ export default function Klasindeling() {
                     max="8"
                     value={rijen}
                     onChange={(e) => setRijen(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer accent-indigo-600"
                     aria-label="Aantal rijen aanpassen"
                     aria-valuemin={1}
                     aria-valuemax={8}
@@ -379,7 +379,7 @@ export default function Klasindeling() {
                     max="10"
                     value={kolommen}
                     onChange={(e) => setKolommen(parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer accent-indigo-600"
                     aria-label="Aantal kolommen aanpassen"
                     aria-valuemin={1}
                     aria-valuemax={10}
@@ -390,7 +390,7 @@ export default function Klasindeling() {
                   />
                 </div>
 
-                <div className="bg-indigo-50 p-4 rounded-lg">
+                <div className="bg-indigo-50 p-4 rounded-2xl">
                   <p className="text-sm text-gray-700">
                     <strong>Totaal aantal plaatsen:</strong> {rijen * kolommen - geblokkeerd.size}
                   </p>
@@ -399,7 +399,7 @@ export default function Klasindeling() {
                   </p>
                 </div>
 
-                <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+                <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-2xl">
                   <p className="text-sm text-gray-700">
                     💡 <strong>Tip:</strong> Klik hieronder op een vakje om een lege ruimte te markeren (tussen banken, gang, enz.)
                   </p>
@@ -409,7 +409,7 @@ export default function Klasindeling() {
           </div>
 
           {/* Klas layout editor */}
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Kies lege ruimtes (klik op vakjes om te blokkeren/deblokkeren)
             </h3>
@@ -423,7 +423,7 @@ export default function Klasindeling() {
                       <button
                         key={key}
                         onClick={() => toggleBlok(rijIndex, kolomIndex)}
-                        className={`h-14 md:h-16 rounded-lg border-2 flex items-center justify-center transition ${
+                        className={`h-14 md:h-16 rounded-2xl border-2 flex items-center justify-center transition ${
                           isGeblokkeerd
                             ? 'bg-red-100 border-red-400 hover:bg-red-200'
                             : 'bg-green-50 border-green-300 hover:bg-green-100'
@@ -448,7 +448,7 @@ export default function Klasindeling() {
           <div className="max-w-md mx-auto mb-6">
             <button
               onClick={genereerIndeling}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg flex items-center justify-center gap-2 transition"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 transition"
             >
               <Shuffle className="w-5 h-5" />
               Genereer willekeurige indeling
@@ -466,26 +466,26 @@ export default function Klasindeling() {
                   value={klasNaam}
                   onChange={(e) => setKlasNaam(e.target.value)}
                   placeholder="Bijv: 3A, 5de jaar, ..."
-                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
                 <button
                   onClick={handlePrint}
-                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition"
+                  className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-2xl flex items-center justify-center gap-2 transition"
                 >
                   <Printer className="w-5 h-5" />
                   Print Klasindeling
                 </button>
                 <button
                   onClick={handleDownloadPDF}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg flex items-center justify-center gap-2 transition"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-2xl flex items-center justify-center gap-2 transition"
                 >
                   <Download className="w-5 h-5" />
                   Download als PDF
                 </button>
               </div>
-              <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg inline-block">
+              <div className="bg-blue-50 border border-blue-200 p-3 rounded-2xl inline-block">
                 <p className="text-sm text-gray-700">
                   💡 <strong>Sleep en drop</strong> om leerlingen te verplaatsen
                 </p>
@@ -496,7 +496,7 @@ export default function Klasindeling() {
 
         {/* Resultaat - zichtbaar op scherm en bij printen */}
         {toonResultaat && (
-          <div id="klasindeling-resultaat" className="bg-white rounded-lg shadow-lg p-4 md:p-8 print:shadow-none print:p-0 print:rounded-none">
+          <div id="klasindeling-resultaat" className="bg-white rounded-2xl shadow-lg p-4 md:p-8 print:shadow-none print:p-0 print:rounded-none">
             <h2 className="text-xl md:text-2xl font-bold text-center text-gray-800 mb-4 md:mb-6 print:mb-4 print:text-3xl">
               Klasindeling - {klasNaam || 'via klasindeling.be'}
             </h2>
@@ -517,7 +517,7 @@ export default function Klasindeling() {
                           onDragStart={(e) => handleDragStart(e, rijIndex, kolomIndex)}
                           onDragOver={handleDragOver}
                           onDrop={(e) => handleDrop(e, rijIndex, kolomIndex)}
-                          className={`border-2 rounded-lg p-2 md:p-4 text-center min-h-[60px] md:min-h-[80px] min-w-[60px] md:min-w-0 flex flex-col items-center justify-center transition print:min-h-[70px] print:p-2 print:border text-xs md:text-base ${
+                          className={`border-2 rounded-2xl p-2 md:p-4 text-center min-h-[60px] md:min-h-[80px] min-w-[60px] md:min-w-0 flex flex-col items-center justify-center transition print:min-h-[70px] print:p-2 print:border text-xs md:text-base ${
                             isGeblokkeerd
                               ? 'bg-gray-200 border-gray-300 print:bg-white print:border-gray-300'
                               : leerling

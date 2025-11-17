@@ -97,7 +97,7 @@ const StatusDisplay = ({ isSinking, submergedRatio }: StatusDisplayProps) => {
     }
 
     return (
-        <div className={`mt-3 p-2 text-center rounded-lg font-medium ${statusColor}`}>
+        <div className={`mt-3 p-2 text-center rounded-2xl font-medium ${statusColor}`}>
             {statusText}
         </div>
     );
@@ -178,7 +178,7 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
                         id={`density-select-${densityType}`}
                         onChange={handleSelectChange}
                         value={currentPreset ? value : ''}
-                        className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                        className="w-full p-2 border border-indigo-300 rounded-2xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
                         aria-label={`${labelText} preset selecteren`}
                     >
                         {!currentPreset && (
@@ -209,7 +209,7 @@ const DensitySlider = ({ value, min, max, step, onChange, densityType, solidInfo
                         onChange(parseFloat(e.target.value));
                     }}
                     onInput={updateSliderBackground}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer range-lg"
                     style={{ 
                         accentColor: densityType === 'solid' && solidInfo ? solidInfo.color.split('-')[1] : 'blue',
                         '--value-percent': `${((value - min) / (max - min)) * 100}%`
@@ -254,7 +254,7 @@ const GravitySlider = ({ value, min, max, step, onChange, onPresetChange }: Grav
                         id="gravity-select"
                         onChange={handleSelectChange}
                         value={currentPreset ? value : ''}
-                        className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                        className="w-full p-2 border border-indigo-300 rounded-2xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
                         aria-label="Zwaartekracht preset selecteren"
                     >
                         {!currentPreset && (
@@ -285,7 +285,7 @@ const GravitySlider = ({ value, min, max, step, onChange, onPresetChange }: Grav
                         onChange(parseFloat(e.target.value));
                     }}
                     onInput={updateSliderBackground}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer range-lg"
                     style={{ 
                         accentColor: 'blue',
                         '--value-percent': `${((value - min) / (max - min)) * 100}%`
@@ -325,7 +325,7 @@ const VolumeSlider = ({ value, min, max, step, onChange, onPresetChange }: Volum
                         id="volume-select"
                         onChange={handleSelectChange}
                         value={currentPreset ? value : ''}
-                        className="w-full p-2 border border-indigo-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
+                        className="w-full p-2 border border-indigo-300 rounded-2xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm cursor-pointer bg-white"
                         aria-label="Volume preset selecteren"
                     >
                         {!currentPreset && (
@@ -356,7 +356,7 @@ const VolumeSlider = ({ value, min, max, step, onChange, onPresetChange }: Volum
                         onChange(parseFloat(e.target.value));
                     }}
                     onInput={updateSliderBackground}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer range-lg"
                     style={{ 
                         accentColor: 'blue',
                         '--value-percent': `${((value - min) / (max - min)) * 100}%`
@@ -390,7 +390,7 @@ const SubmersionSlider = ({ value, calculatedValue, onChange, isManual, onReset 
                 {isManual && (
                     <button
                         onClick={onReset}
-                        className="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 px-3 py-1 rounded-lg transition-colors"
+                        className="text-xs bg-amber-200 hover:bg-amber-300 text-amber-900 px-3 py-1 rounded-2xl transition-colors"
                     >
                         Reset naar automatisch
                     </button>
@@ -424,7 +424,7 @@ const SubmersionSlider = ({ value, calculatedValue, onChange, isManual, onReset 
                         onChange(parseFloat(e.target.value));
                     }}
                     onInput={updateSliderBackground}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg"
+                    className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer range-lg"
                     style={{ 
                         accentColor: isManual ? '#f59e0b' : '#6366f1',
                         '--value-percent': `${value * 100}%`,
@@ -595,7 +595,7 @@ export default function ArchimedesSimulator() {
 
                 <div className="grid md:grid-cols-2 gap-8">
                     {/* Linkerkolom: Invoerbesturingen */}
-                    <div className="bg-white p-8 rounded-lg shadow-lg space-y-4">
+                    <div className="bg-white p-8 rounded-2xl shadow-lg space-y-4">
                         <h2 className="text-xl font-semibold text-indigo-900 border-b border-indigo-200 pb-2 mb-4">
                             Instellingen
                         </h2>
@@ -657,7 +657,7 @@ export default function ArchimedesSimulator() {
                     </div>
 
                     {/* Rechterkolom: Visualisatie en Resultaten */}
-                    <div className="bg-white p-8 rounded-lg shadow-lg">
+                    <div className="bg-white p-8 rounded-2xl shadow-lg">
                         <h2 className="text-xl font-semibold text-indigo-900 border-b border-indigo-200 pb-2 mb-4">
                             Resultaten & Visualisatie
                         </h2>
@@ -671,7 +671,7 @@ export default function ArchimedesSimulator() {
                                 fluidColor={fluidColor}
                                 objectBreedte={objectBreedte}
                             />
-                            <div className="space-y-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                            <div className="space-y-3 p-4 bg-indigo-50 rounded-2xl border border-indigo-200">
                                 <ResultDisplayWithSign
                                     label={
                                         <>

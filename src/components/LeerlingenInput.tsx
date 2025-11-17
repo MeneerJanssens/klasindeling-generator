@@ -64,7 +64,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
       <div className="flex justify-between items-center mb-3">
         <h3 className="font-semibold text-gray-700">Leerlingen toevoegen</h3>
         <button
@@ -83,13 +83,13 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
           <textarea
             value={bulkTekst}
             onChange={(e) => setBulkTekst(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             rows={6}
             placeholder="Emma de Vries&#10;Luuk Jansen&#10;Sophie Bakker&#10;..."
           />
           <button
             onClick={plakLeerlingen}
-            className="mt-2 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            className="mt-2 px-6 py-2 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition"
           >
             Toevoegen ({bulkTekst.split('\n').filter(r => r.trim()).length} leerlingen)
           </button>
@@ -105,7 +105,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
               value={naam}
               onChange={(e) => setNaam(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="Bijv. Emma de Vries"
             />
           </div>
@@ -118,7 +118,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
               id="gender-select"
               value={geslacht}
               onChange={(e) => setGeslacht(e.target.value as 'm' | 'v')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-indigo-500"
               aria-label="Geslacht selecteren"
             >
               <option value="m">Jongen</option>
@@ -156,7 +156,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
 
           <button
             onClick={voegLeerlingToe}
-            className="w-full flex-1 min-w-[200px] px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2"
+            className="w-full flex-1 min-w-[200px] px-6 py-2 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 transition flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Toevoegen
@@ -181,7 +181,7 @@ export default function LeerlingenInput({ leerlingen, setLeerlingen }: Leerlinge
                   />
                 ) : (
                   <div
-                    className={`px-3 py-2 rounded-lg flex items-center gap-2 cursor-pointer hover:shadow-md transition ${
+                    className={`px-3 py-2 rounded-2xl flex items-center gap-2 cursor-pointer hover:shadow-md transition ${
                       leerling.vooraan
                         ? 'bg-green-100 border-2 border-green-400'
                         : leerling.druk
@@ -234,7 +234,7 @@ function BewerkLeerlingForm({ leerling, onOpslaan, onAnnuleer }: BewerkLeerlingF
   };
 
   return (
-    <div className="bg-white border-2 border-indigo-500 rounded-lg p-3 shadow-lg" onClick={(e) => e.stopPropagation()}>
+    <div className="bg-white border-2 border-indigo-500 rounded-2xl p-3 shadow-lg" onClick={(e) => e.stopPropagation()}>
       <div className="space-y-2">
         <input
           type="text"

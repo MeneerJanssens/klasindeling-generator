@@ -57,7 +57,7 @@ export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, k
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
         <FolderOpen className="w-5 h-5" />
         Opgeslagen klassen
@@ -77,7 +77,7 @@ export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, k
                 setGeselecteerdeKlas(e.target.value);
                 if (e.target.value) laadKlas(e.target.value);
               }}
-              className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
+              className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none text-sm"
               aria-label="Selecteer een klas om te laden"
             >
               <option value="">-- Selecteer een klas --</option>
@@ -90,7 +90,7 @@ export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, k
             {geselecteerdeKlas && (
               <button
                 onClick={() => verwijderKlas(geselecteerdeKlas)}
-                className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-2 transition"
+                className="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-2xl flex items-center justify-center gap-2 transition"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -109,11 +109,11 @@ export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, k
               value={opslaanNaam}
               onChange={(e) => setOpslaanNaam(e.target.value)}
               placeholder="Bijv: 3A, 4B, ..."
-              className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none text-sm"
+              className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none text-sm"
             />
             <button
               onClick={opslaanKlas}
-              className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center gap-2 transition whitespace-nowrap"
+              className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-2xl flex items-center justify-center gap-2 transition whitespace-nowrap"
             >
               <Save className="w-4 h-4" />
               Opslaan

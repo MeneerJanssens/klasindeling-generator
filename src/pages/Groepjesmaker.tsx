@@ -281,7 +281,7 @@ export default function Groepjesmaker() {
 
         {/* Groepsinstellingen */}
         {leerlingen.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
+          <div className="bg-white rounded-2xl shadow-lg p-8 mb-6">
             <h2 className="font-semibold text-gray-700 mb-4">Groepsindeling</h2>
               
               <div className="flex gap-4 mb-4 flex-wrap">
@@ -330,7 +330,7 @@ export default function Groepjesmaker() {
 
               <button
                 onClick={maakGroepen}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2 font-medium"
+                className="px-6 py-3 bg-green-600 text-white rounded-2xl hover:bg-green-700 transition flex items-center gap-2 font-medium"
               >
                 <RefreshCw className="w-5 h-5" />
                 Maak Groepen
@@ -340,7 +340,7 @@ export default function Groepjesmaker() {
 
         {/* Groepen weergave */}
         {groepen.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="bg-white rounded-2xl shadow-lg p-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-800 mb-4">
                 Groepsindeling ({groepen.length} groepen)
@@ -356,7 +356,7 @@ export default function Groepjesmaker() {
                     value={klasNaam}
                     onChange={(e) => setKlasNaam(e.target.value)}
                     placeholder="Bijv: 3A, 5de jaar, ..."
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
                 
@@ -369,7 +369,7 @@ export default function Groepjesmaker() {
                     value={extraTekst}
                     onChange={(e) => setExtraTekst(e.target.value)}
                     placeholder="Bijv: Project groepen, Week 3, ..."
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -379,7 +379,7 @@ export default function Groepjesmaker() {
               <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => setBewerkMode(!bewerkMode)}
-                  className={`w-full sm:min-w-[160px] sm:w-auto px-4 py-2 rounded-lg transition flex items-center justify-center gap-2 ${
+                  className={`w-full sm:min-w-[160px] sm:w-auto px-4 py-2 rounded-2xl transition flex items-center justify-center gap-2 ${
                     bewerkMode
                       ? 'bg-green-600 text-white hover:bg-green-700'
                       : 'bg-indigo-600 text-white hover:bg-indigo-700'
@@ -399,14 +399,14 @@ export default function Groepjesmaker() {
                 </button>
                 <button
                   onClick={handlePrint}
-                  className="w-full sm:min-w-[160px] sm:w-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2"
+                  className="w-full sm:min-w-[160px] sm:w-auto px-4 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-700 transition flex items-center justify-center gap-2"
                 >
                   <Printer className="w-4 h-4" />
                   Print
                 </button>
                 <button
                   onClick={handleDownloadPDF}
-                  className="w-full sm:min-w-[160px] sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                  className="w-full sm:min-w-[160px] sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 transition flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
                   Download PDF
@@ -415,7 +415,7 @@ export default function Groepjesmaker() {
             </div>
 
             {bewerkMode && (
-              <div className="mb-4 p-4 bg-blue-50 rounded-lg">
+              <div className="mb-4 p-4 bg-blue-50 rounded-2xl">
                 <p className="text-sm text-blue-800 mb-2">
                   <strong>Bewerkingsmodus:</strong> Selecteer een leerling en klik op een groep om te verplaatsen.
                 </p>
@@ -443,7 +443,7 @@ export default function Groepjesmaker() {
               {groepen.map((groep, groepIdx) => (
                 <div
                   key={groepIdx}
-                  className="border-2 border-gray-200 rounded-xl p-4 bg-gradient-to-br from-white to-gray-50"
+                  className="border-2 border-gray-200 rounded-2xl p-4 bg-gradient-to-br from-white to-gray-50"
                 >
                   <h3 className="font-bold text-lg text-indigo-600 mb-3">
                     Groep {groepIdx + 1} ({groep.length})
@@ -513,7 +513,7 @@ function LeerlingKaart({ leerling, bewerkMode, onVerplaats, groepen, huidigeGroe
   return (
     <div className="relative">
       <div
-        className={`px-3 py-2 rounded-lg ${
+        className={`px-3 py-2 rounded-2xl ${
           leerling.druk
             ? 'bg-orange-100 border-2 border-orange-300'
             : 'bg-white border-2 border-gray-200'
@@ -534,7 +534,7 @@ function LeerlingKaart({ leerling, bewerkMode, onVerplaats, groepen, huidigeGroe
       </div>
 
       {bewerkMode && toonVerplaats && (
-        <div className="absolute z-10 mt-1 bg-white border-2 border-indigo-300 rounded-lg shadow-lg p-2 w-full">
+        <div className="absolute z-10 mt-1 bg-white border-2 border-indigo-300 rounded-2xl shadow-lg p-2 w-full">
           <p className="text-xs font-semibold text-gray-600 mb-1">Verplaats naar:</p>
           {groepen.map((_, idx: number) => (
             idx !== huidigeGroep && (
