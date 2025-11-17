@@ -25,9 +25,8 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://ko-fi.com" />
     
-    <!-- Preload critical assets -->
-    <link rel="modulepreload" href="/src/main.tsx" />
-    <link rel="preload" href="/src/App.tsx" as="script" crossorigin />
+    <!-- Preload critical assets (removed dev source preloads that caused data:application in production) -->
+    <!-- Vite will handle module preloads for built assets; removing preloads to avoid data:application base64 in production -->
     
     <!-- Optimize font loading -->
     <style>
