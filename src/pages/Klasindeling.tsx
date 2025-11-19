@@ -256,11 +256,8 @@ export default function Klasindeling() {
     if (!element) return;
 
     try {
-      // Dynamically import PDF libraries only when needed
-      const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
-        import('jspdf'),
-        import('html2canvas')
-      ]);
+      // Dynamically import jsPDF only when needed
+      const { jsPDF } = await import('jspdf');
 
       // Add a class to force desktop styles
       element.classList.add('pdf-export');
@@ -291,18 +288,42 @@ export default function Klasindeling() {
         .pdf-export .pdf-hidden {
           display: none !important;
         }
+        .pdf-export .font-medium {
+          font-weight: bold !important;
+        }
+        .pdf-export .border-gray-200 {
+          border-color: #9ca3af !important;
+        }
+        .pdf-export .border-gray-300 {
+          border-color: #9ca3af !important;
+        }
+        .pdf-export .bg-gray-200 {
+          background: #f3f4f6 !important;
+        }
       `;
       document.head.appendChild(style);
       
       // Wait for styles to apply
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      // Create canvas from the element
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const fileName = klasNaam 
+        ? `Klasindeling-${klasNaam}.pdf` 
+        : 'Klasindeling-Meneer-Janssens.pdf';
+
+      // Use jsPDF html method to directly convert HTML to PDF
+      await pdf.html(element, {
+        callback: function(pdf) {
+          pdf.save(fileName);
+        },
+        x: 0,
+        y: 0,
+        width: 297, // A4 landscape width
         windowWidth: 1200
       });
 
@@ -310,25 +331,6 @@ export default function Klasindeling() {
       element.classList.remove('pdf-export');
       const tempStyle = document.getElementById('pdf-export-styles');
       if (tempStyle) tempStyle.remove();
-
-      // Calculate dimensions for A4 landscape
-      const imgWidth = 297; // A4 landscape width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      const pdf = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      
-      const fileName = klasNaam 
-        ? `Klasindeling-${klasNaam}.pdf` 
-        : 'Klasindeling-Meneer-Janssens.pdf';
-      
-      pdf.save(fileName);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Er is een fout opgetreden bij het genereren van de PDF.');
@@ -483,13 +485,15 @@ export default function Klasindeling() {
           </div>
 
           <div className="max-w-md mx-auto mb-6 flex flex-col gap-4">
-            <button
-              onClick={handleSave}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 transition"
-            >
-              <Save className="w-5 h-5" />
-              Opslaan
-            </button>
+            <div className="flex justify-center">
+              <button
+                onClick={handleSave}
+                className="w-1/2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 transition"
+              >
+                <Save className="w-5 h-5" />
+                Opslaan
+              </button>
+            </div>
             <button
               onClick={genereerIndeling}
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 transition"
@@ -708,6 +712,11 @@ export default function Klasindeling() {
           .print\\:cursor-default {
             cursor: default !important;
           }
+        }
+        #klasindeling-resultaat {
+          page-break-inside: avoid;
+          page-break-after: avoid;
+          page-break-before: avoid;
         }
       `}</style>
     </div>

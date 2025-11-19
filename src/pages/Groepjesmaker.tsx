@@ -196,11 +196,8 @@ export default function Groepjesmaker() {
     if (!element) return;
 
     try {
-      // Dynamically import PDF libraries only when needed
-      const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
-        import('jspdf'),
-        import('html2canvas')
-      ]);
+      // Dynamically import jsPDF only when needed
+      const { jsPDF } = await import('jspdf');
 
       // Add a class to force desktop styles
       element.classList.add('pdf-export');
@@ -237,11 +234,20 @@ export default function Groepjesmaker() {
       // Wait for styles to apply
       await new Promise(resolve => setTimeout(resolve, 100));
 
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Use jsPDF html method to directly convert HTML to PDF
+      await pdf.html(element, {
+        callback: function(pdf) {
+          pdf.save('Groepsindeling-Meneer-Janssens.pdf');
+        },
+        x: 0,
+        y: 0,
+        width: 210, // A4 portrait width
         windowWidth: 1200
       });
 
@@ -249,26 +255,6 @@ export default function Groepjesmaker() {
       element.classList.remove('pdf-export');
       const tempStyle = document.getElementById('pdf-export-styles');
       if (tempStyle) tempStyle.remove();
-
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      // A4 dimensions
-      const pdfWidth = 210; // A4 width in mm
-      const margin = 15; // 15mm margin on all sides
-      
-      const contentWidth = pdfWidth - (2 * margin);
-      const contentHeight = (canvas.height * contentWidth) / canvas.width;
-      
-      const imgData = canvas.toDataURL('image/png');
-      
-      // Add image with margins
-      pdf.addImage(imgData, 'PNG', margin, margin, contentWidth, contentHeight);
-      
-      pdf.save('Groepsindeling-Meneer-Janssens.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('Er is een fout opgetreden bij het genereren van de PDF.');
