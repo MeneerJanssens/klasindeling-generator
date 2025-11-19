@@ -21,6 +21,17 @@ export default function Groepjesmaker() {
     setKlasNaam(klas.naam || '');
   };
 
+  const reset = () => {
+    setLeerlingen([]);
+    setVerdeelMethode('grootte');
+    setGroepsGrootte(4);
+    setAantalGroepen(5);
+    setGroepen([]);
+    setBewerkMode(false);
+    setKlasNaam('');
+    setExtraTekst('');
+  };
+
   const maakGroepen = () => {
     if (leerlingen.length === 0) return;
 
@@ -186,7 +197,7 @@ export default function Groepjesmaker() {
 
     try {
       // Dynamically import PDF libraries only when needed
-      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+      const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
         import('jspdf'),
         import('html2canvas')
       ]);
@@ -210,6 +221,15 @@ export default function Groepjesmaker() {
           padding: 1rem !important;
           font-size: 1rem !important;
           line-height: 1.5rem !important;
+        }
+        .pdf-export * {
+          background: white !important;
+          background-image: none !important;
+          color: black !important;
+          border-color: black !important;
+        }
+        .pdf-export .pdf-hidden {
+          display: none !important;
         }
       `;
       document.head.appendChild(style);
@@ -279,6 +299,7 @@ export default function Groepjesmaker() {
           <KlasOpslaan 
             leerlingen={leerlingen} 
             onLaadKlas={handleLaadKlas}
+            onReset={reset}
           />
         </div>
 
@@ -532,12 +553,12 @@ function LeerlingKaart({ leerling, bewerkMode, onVerplaats, groepen, huidigeGroe
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">
             {leerling.naam}
-            <span className="ml-1">
+            <span className="ml-1 pdf-hidden">
               {leerling.geslacht === 'm' ? '♂️' : leerling.geslacht === 'v' ? '♀️' : '⚧️'}
             </span>
           </span>
           {leerling.druk && (
-            <span className="text-xs bg-orange-200 px-2 py-1 rounded">⚠️</span>
+            <span className="text-xs bg-orange-200 px-2 py-1 rounded pdf-hidden">⚠️</span>
           )}
         </div>
       </div>

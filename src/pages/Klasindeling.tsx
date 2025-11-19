@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Armchair, Grid3x3, Shuffle, Printer, X, Download } from 'lucide-react';
-import { Leerling, OpgeslagenKlas } from '../utils/klasStorage';
+import { Armchair, Grid3x3, Shuffle, Printer, X, Download, Save } from 'lucide-react';
+import { Leerling, OpgeslagenKlas, addKlas } from '../utils/klasStorage';
 import LeerlingenInput from '../components/LeerlingenInput';
 import KlasOpslaan from '../components/KlasOpslaan';
 
@@ -24,19 +24,29 @@ export default function Klasindeling() {
     setLeerlingen(klas.leerlingen);
     setKlasNaam(klas.naam); // Vul de klasnaam automatisch in
     
-    // Als er een opgeslagen indeling is, laad die ook
+    // Laad de instellingen, maar toon niet meteen de indeling
     if (klas.indeling && klas.rijen && klas.kolommen) {
-      setIndeling(klas.indeling);
       setRijen(klas.rijen);
       setKolommen(klas.kolommen);
       if (klas.geblokkeerd) {
         setGeblokkeerd(new Set(klas.geblokkeerd));
       }
-      setToonResultaat(true);
-    } else {
-      setToonResultaat(false);
-      setIndeling([]);
     }
+    
+    // Reset de indeling en toon geen resultaat totdat gebruiker genereert
+    setToonResultaat(false);
+    setIndeling([]);
+  };
+
+  const reset = () => {
+    setLeerlingen([]);
+    setRijen(4);
+    setKolommen(6);
+    setIndeling([]);
+    setToonResultaat(false);
+    setDraggedItem(null);
+    setGeblokkeerd(new Set());
+    setKlasNaam('');
   };
 
   const genereerIndeling = () => {
@@ -165,6 +175,23 @@ export default function Klasindeling() {
     setToonResultaat(true);
   };
 
+  const handleSave = () => {
+    let naam = klasNaam.trim();
+    if (!naam) {
+      naam = prompt('Geef een naam voor de klas:') || '';
+      if (!naam.trim()) return;
+      naam = naam.trim();
+    }
+
+    if (leerlingen.length === 0) {
+      alert('Voeg eerst leerlingen toe!');
+      return;
+    }
+
+    addKlas(naam, leerlingen, indeling, rijen, kolommen, geblokkeerd);
+    alert(`Klas "${naam}" opgeslagen!`);
+  };
+
   const toggleBlok = (rijIndex: number, kolomIndex: number): void => {
     const key = `${rijIndex}-${kolomIndex}`;
     const nieuweGeblokkeerd = new Set(geblokkeerd);
@@ -230,7 +257,7 @@ export default function Klasindeling() {
 
     try {
       // Dynamically import PDF libraries only when needed
-      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+      const [{ jsPDF }, { default: html2canvas }] = await Promise.all([
         import('jspdf'),
         import('html2canvas')
       ]);
@@ -254,6 +281,15 @@ export default function Klasindeling() {
           padding: 1rem !important;
           font-size: 1rem !important;
           line-height: 1.5rem !important;
+        }
+        .pdf-export * {
+          background: white !important;
+          background-image: none !important;
+          color: black !important;
+          border-color: black !important;
+        }
+        .pdf-export .pdf-hidden {
+          display: none !important;
         }
       `;
       document.head.appendChild(style);
@@ -328,6 +364,7 @@ export default function Klasindeling() {
               rijen={rijen}
               kolommen={kolommen}
               geblokkeerd={geblokkeerd}
+              onReset={reset}
             />
           </div>
 
@@ -376,16 +413,16 @@ export default function Klasindeling() {
                     type="range"
                     id="kolommen-range"
                     min="1"
-                    max="10"
+                    max="8"
                     value={kolommen}
                     onChange={(e) => setKolommen(parseInt(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-2xl appearance-none cursor-pointer accent-indigo-600"
                     aria-label="Aantal kolommen aanpassen"
                     aria-valuemin={1}
-                    aria-valuemax={10}
+                    aria-valuemax={8}
                     aria-valuenow={kolommen}
                     style={{
-                      background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${((kolommen - 1) / 9) * 100}%, #e5e7eb ${((kolommen - 1) / 9) * 100}%, #e5e7eb 100%)`
+                      background: `linear-gradient(to right, #4f46e5 0%, #4f46e5 ${((kolommen - 1) / 7) * 100}%, #e5e7eb ${((kolommen - 1) / 7) * 100}%, #e5e7eb 100%)`
                     }}
                   />
                 </div>
@@ -445,7 +482,14 @@ export default function Klasindeling() {
             </div>
           </div>
 
-          <div className="max-w-md mx-auto mb-6">
+          <div className="max-w-md mx-auto mb-6 flex flex-col gap-4">
+            <button
+              onClick={handleSave}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 transition"
+            >
+              <Save className="w-5 h-5" />
+              Opslaan
+            </button>
             <button
               onClick={genereerIndeling}
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-2xl flex items-center justify-center gap-2 transition"
@@ -535,7 +579,7 @@ export default function Klasindeling() {
                               <span className="font-medium print:text-base text-gray-800 print:text-black break-word">
                                 {leerling.naam}
                               </span>
-                              <span className="text-xs mt-1 print:hidden">
+                              <span className="text-xs mt-1 print:hidden pdf-hidden">
                                 {leerling.geslacht === 'm' ? '♂️' : '♀️'}
                                 {isVooraan && ' ⭐'}
                                 {isDruk && ' ⚠️'}

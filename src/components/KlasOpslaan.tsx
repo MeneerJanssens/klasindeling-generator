@@ -10,9 +10,10 @@ interface KlasOpslagenProps {
   rijen?: number;
   kolommen?: number;
   geblokkeerd?: Set<string>;
+  onReset?: () => void;
 }
 
-export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, kolommen, geblokkeerd }: KlasOpslagenProps) {
+export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, kolommen, geblokkeerd, onReset }: KlasOpslagenProps) {
   const [opgeslagenKlassen, setOpgeslagenKlassen] = useState<OpgeslagenKlas[]>([]);
   const [geselecteerdeKlas, setGeselecteerdeKlas] = useState<string>('');
   const [opslaanNaam, setOpslaanNaam] = useState<string>('');
@@ -75,7 +76,11 @@ export default function KlasOpslaan({ leerlingen, onLaadKlas, indeling, rijen, k
               value={geselecteerdeKlas}
               onChange={(e) => {
                 setGeselecteerdeKlas(e.target.value);
-                if (e.target.value) laadKlas(e.target.value);
+                if (e.target.value) {
+                  laadKlas(e.target.value);
+                } else {
+                  onReset?.();
+                }
               }}
               className="w-full sm:flex-1 px-4 py-2 border-2 border-gray-300 rounded-2xl focus:border-indigo-500 focus:outline-none text-sm"
               aria-label="Selecteer een klas om te laden"
