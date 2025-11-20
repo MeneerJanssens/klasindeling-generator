@@ -213,49 +213,26 @@ export default function Groepjesmaker() {
     await new Promise((r) => setTimeout(r, 120));
 
     try {
-      // Try dynamic import of html2pdf.js (improves html->pdf fidelity)
-      let html2pdfLib: any;
-      try {
-        const mod = await import('html2pdf.js');
-        html2pdfLib = mod.default || mod;
-      } catch (err) {
-        // If package is not installed, load from CDN as a fallback
-        await new Promise<void>((resolve, reject) => {
-          const s = document.createElement('script');
-          s.src = 'https://unpkg.com/html2pdf.js/dist/html2pdf.bundle.min.js';
-          s.onload = () => resolve();
-          s.onerror = () => reject(new Error('Failed to load html2pdf.js from CDN'));
-          document.head.appendChild(s);
-        });
-        // @ts-ignore
-        html2pdfLib = (window as any).html2pdf;
-      }
+      // Import html2pdf.js locally (package is installed)
+      const html2pdfLib = await import('html2pdf.js');
 
       // Configure options for good visual fidelity
       const opt = {
         margin: 10,
         filename: 'Groepsindeling-Meneer-Janssens.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: 'jpeg' as const, quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
           allowTaint: false,
           scrollY: 0
         },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const },
         pagebreak: { mode: ['css', 'legacy'] }
       };
 
-      // html2pdf returns a chainable object; call save() and await promise if available
-      const worker = html2pdfLib().set(opt).from(element);
-      // Some versions return a promise when calling save(); handle both
-      const saved = worker.save();
-      if (saved && typeof saved.then === 'function') {
-        await saved;
-      } else {
-        // If .save() doesn't return a promise, wait a short time for the download to start
-        await new Promise((r) => setTimeout(r, 1000));
-      }
+      // Generate and save PDF
+      await html2pdfLib.default(element, opt);
     } catch (error: any) {
       console.error('Error generating PDF (html2pdf):', error);
       alert('Er is een fout opgetreden bij het genereren van de PDF. Controleer de console voor details.');
