@@ -21,6 +21,8 @@ export default defineConfig({
   server: {
     host: true, // Listen on all network interfaces
     port: 5173,
+    // Allow Netlify dev preview host used by the deployment preview
+    allowedHosts: ['devserver-dev--klasindeling.netlify.app'],
   },
   build: {
     minify: 'terser',
