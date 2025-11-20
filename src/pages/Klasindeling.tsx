@@ -378,14 +378,25 @@ export default function Klasindeling() {
         ? `Klasindeling-${klasNaam}.pdf` 
         : 'Klasindeling-Meneer-Janssens.pdf';
 
-      // Use html2pdf for all cases
-      const html2pdf = (await import('html2pdf.js')).default;
+      // Load UMD html2pdf bundle at runtime to avoid bundler/ESM issues
+      await new Promise<void>((resolve, reject) => {
+        if ((window as any).html2pdf) return resolve();
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/html2pdf.js/dist/html2pdf.bundle.min.js';
+        s.async = true;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('Failed to load html2pdf.js bundle'));
+        document.head.appendChild(s);
+      });
+
+      // @ts-ignore - provided by the UMD bundle
+      const html2pdf = (window as any).html2pdf;
 
       // Configure html2pdf options
       const options = {
         margin: 0.5,
         filename: fileName,
-        image: { type: 'jpeg' as const, quality: 0.98 },
+        image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { 
           scale: 2, 
           useCORS: true,
@@ -393,15 +404,26 @@ export default function Klasindeling() {
           backgroundColor: '#ffffff'
         },
         jsPDF: { 
-          unit: 'in' as const, 
-          format: 'a4' as const, 
-          orientation: 'landscape' as const,
+          unit: 'in', 
+          format: 'a4', 
+          orientation: 'landscape',
           compress: true
         }
       };
 
-      // Generate and download PDF
-      await html2pdf().set(options).from(element).save();
+      // Generate and download PDF using the global UMD API
+      await new Promise<void>((resolve, reject) => {
+        try {
+          const worker = html2pdf().set(options).from(element).save();
+          if (worker && typeof worker.then === 'function') {
+            worker.then(() => resolve()).catch((err: any) => reject(err));
+          } else {
+            setTimeout(() => resolve(), 1000);
+          }
+        } catch (err) {
+          reject(err);
+        }
+      });
 
       // Remove temporary styles
       element.classList.remove('pdf-export');
